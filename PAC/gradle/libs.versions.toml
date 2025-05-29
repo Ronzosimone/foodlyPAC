@@ -10,6 +10,8 @@ lifecycleRuntimeKtx = "2.7.0"  # Versione compatibile con compileSdk 34
 
 composeBom = "2024.04.01"
 navigationCompose = "2.8.9"
+ktor = "2.3.7" # Ktor version
+kotlinxSerialization = "1.6.0" # Kotlinx Serialization version
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -28,6 +30,28 @@ androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 
+# Ktor
+ktor-server-core = { group = "io.ktor", name = "ktor-server-core-jvm", version.ref = "ktor" }
+ktor-server-netty = { group = "io.ktor", name = "ktor-server-netty-jvm", version.ref = "ktor" }
+ktor-server-content-negotiation = { group = "io.ktor", name = "ktor-server-content-negotiation-jvm", version.ref = "ktor" }
+ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json-jvm", version.ref = "ktor" }
+logback-classic = { group = "ch.qos.logback", name = "logback-classic", version = "1.4.11" } # Logging for Ktor
+
+# Ktor Client
+ktor-client-core = { group = "io.ktor", name = "ktor-client-core-jvm", version.ref = "ktor" }
+ktor-client-android = { group = "io.ktor", name = "ktor-client-android", version.ref = "ktor" } # Using Android client engine
+ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation-jvm", version.ref = "ktor" }
+# ktor-client-serialization is implicitly included by ktor-client-content-negotiation usually, but explicitly adding ktor-serialization-kotlinx-json for client is good.
+# Note: ktor-serialization-kotlinx-json-jvm is already defined for server, can be reused for client if "-jvm" suffix is appropriate for both.
+# For client-specific serialization, often ktor-client-serialization + specific format like ktor-client-json is used.
+# However, Ktor's documentation suggests using ktor-serialization-kotlinx-json for the client with ContentNegotiation.
+
+# Kotlinx Serialization
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
+
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" } # Added for Ktor if it were a separate module
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" } # Kotlinx Serialization plugin

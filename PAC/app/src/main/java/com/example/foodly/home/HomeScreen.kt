@@ -27,11 +27,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+// Import new placeholder screens
+import com.example.foodly.pantry.PantryScreen
 import com.example.foodly.recipes.RecipesScreen
+import com.example.foodly.settings.SettingsScreen
+import com.example.foodly.statistics.StatisticsScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen() {
+fun HomeScreen(onLogout: () -> Unit) { // Added onLogout callback
     val navController = rememberNavController()
 
     Scaffold(
@@ -43,16 +47,20 @@ fun HomeScreen() {
             modifier = Modifier.padding(paddingValues)
         ) {
             composable(NavigationItem.Ricette.route) {
-                RicetteScreen()
+                // Actual RecipesScreen from the recipes package
+                com.example.foodly.recipes.RecipesScreen()
             }
             composable(NavigationItem.Statistiche.route) {
-                StatisticheScreen()
+                // New placeholder StatisticsScreen
+                com.example.foodly.statistics.StatisticsScreen()
             }
             composable(NavigationItem.Impostazioni.route) {
-                ImpostazioniScreen()
+                // New placeholder SettingsScreen, pass the onLogout callback
+                com.example.foodly.settings.SettingsScreen(onLogout = onLogout)
             }
             composable(NavigationItem.Dispensa.route) {
-                DispensaScreen()
+                // New placeholder PantryScreen
+                com.example.foodly.pantry.PantryScreen()
             }
         }
     }
@@ -92,54 +100,16 @@ fun BottomNavigation(navController: NavController) {
     }
 }
 
-// Schermate (Screens)
-@Composable
-fun RicetteScreen() {
-}
-
-@Composable
-fun StatisticheScreen() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = "Statistiche",
-            fontSize = 24.sp,
-            textAlign = TextAlign.Center
-        )
-    }
-}
-
-@Composable
-fun DispensaScreen() {
-    RecipesScreen()
-}
-
-@Composable
-fun ImpostazioniScreen() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = "Impostazioni",
-            fontSize = 24.sp,
-            textAlign = TextAlign.Center
-        )
-    }
-}
-
 // Definizione degli elementi di navigazione
 sealed class NavigationItem(val route: String, val icon: ImageVector, val title: String) {
     object Ricette : NavigationItem("ricette", Icons.Outlined.Menu, "Ricette")
-    object Statistiche : NavigationItem("statistiche", Icons.Outlined.Info, "Statistiche")
+    object Statistiche : NavigationItem("statistiche", Icons.Outlined.Info, "Statistica") // Changed label
     object Dispensa : NavigationItem("dispensa", Icons.Filled.ShoppingCart, "Dispensa")
-    object Impostazioni : NavigationItem("impostazioni", Icons.Filled.Settings, "Profilo")
+    object Impostazioni : NavigationItem("impostazioni", Icons.Filled.Settings, "Impostazioni") // Changed label
 }
 
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {
-    HomeScreen()
+    HomeScreen(onLogout = {}) // Provide dummy callback for preview
 }

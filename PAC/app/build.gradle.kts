@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.kotlin.serialization) // Apply serialization plugin
 }
 
 android {
@@ -62,6 +63,22 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
+
+    // Ktor dependencies
+    implementation(libs.ktor.server.core)
+    implementation(libs.ktor.server.netty)
+    implementation(libs.ktor.server.content.negotiation)
+    implementation(libs.ktor.serialization.kotlinx.json) // For Ktor server
+    implementation(libs.logback.classic) // Logging for Ktor
+
+    // Ktor Client Dependencies
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.android)
+    implementation(libs.ktor.client.content.negotiation) // For Ktor client
+    // implementation(libs.ktor.serialization.kotlinx.json) // Re-iterating for client, if needed, or ensure it's available
+    
+    implementation(libs.kotlinx.serialization.json) // Kotlinx Serialization core, already here, good.
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
