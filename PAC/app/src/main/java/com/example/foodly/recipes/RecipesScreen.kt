@@ -23,25 +23,21 @@ import coil.request.ImageRequest
 import com.example.foodly.backend.Recipe
 import com.example.foodly.ui.theme.FoodlyTheme
 
-import androidx.navigation.NavController
-
 @Composable
 fun RecipesScreen(
     modifier: Modifier = Modifier,
-    viewModel: RecipesViewModel = viewModel(),
-    navController: NavController // Added NavController parameter
+    viewModel: RecipesViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    // Use MaterialTheme.colorScheme.background for the main screen background
-    Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+    Surface(modifier = modifier.fillMaxSize()) {
         when (val state = uiState) {
             is RecipesUiState.Loading -> {
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+                    CircularProgressIndicator()
                 }
             }
             is RecipesUiState.Success -> {
@@ -50,28 +46,22 @@ fun RecipesScreen(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(16.dp) // Consistent padding
+                            .padding(16.dp)
                     ) {
                         Text(
                             text = "No recipes found. Try refreshing!",
                             style = MaterialTheme.typography.headlineSmall,
-                            color = MaterialTheme.colorScheme.onSurface, // Use onSurface for better contrast on background
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             textAlign = TextAlign.Center
                         )
                     }
                 } else {
                     LazyColumn(
-                        contentPadding = PaddingValues(all = 16.dp), // Consistent padding
-                        verticalArrangement = Arrangement.spacedBy(16.dp) // Consistent spacing
+                        contentPadding = PaddingValues(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         items(state.recipes) { recipe ->
-                            RecipeItem(
-                                recipe = recipe,
-                                // Pass navigation callback to RecipeItem
-                                onRecipeClick = {
-                                    navController.navigate(com.example.foodly.home.HomeNavRoutes.createRecipeDetailRoute(recipe.id))
-                                }
-                            )
+                            RecipeItem(recipe = recipe)
                         }
                     }
                 }
@@ -81,12 +71,12 @@ fun RecipesScreen(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(16.dp) // Consistent padding
+                        .padding(16.dp)
                 ) {
                     Text(
                         text = "Error: ${state.message}\nTap to retry.",
                         style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.error, // Error color is appropriate here
+                        color = MaterialTheme.colorScheme.error,
                         textAlign = TextAlign.Center
                     )
                 }
@@ -96,12 +86,12 @@ fun RecipesScreen(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(16.dp) // Consistent padding
+                        .padding(16.dp)
                 ) {
                     Text(
                         "Welcome! Let's find some recipes.",
                         style = MaterialTheme.typography.headlineSmall,
-                        color = MaterialTheme.colorScheme.onSurface, // Use onSurface for better contrast
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center
                     )
                 }
@@ -111,21 +101,14 @@ fun RecipesScreen(
 }
 
 @Composable
-fun RecipeItem(
-    recipe: Recipe,
-    modifier: Modifier = Modifier,
-    onRecipeClick: () -> Unit // Callback for click event
-) {
+fun RecipeItem(recipe: Recipe, modifier: Modifier = Modifier) {
     Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable { onRecipeClick() }, // Make the Card clickable
-        // M3 often uses lower elevation or filled styles.
-        // Keep elevation for now, but ensure it's visually harmonious.
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp), // Slightly reduced elevation
-        // Use surface for cards to make them distinct from background, surfaceVariant for less emphasis.
-        // The new theme's surface should work well.
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+        modifier = modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+        onClick = {
+
+        }
     ) {
         Column {
             RecipeImage(
@@ -133,26 +116,25 @@ fun RecipeItem(
                 contentDescription = recipe.title,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(192.dp) // Slightly increased height for better visual
+                    .height(180.dp)
             )
-            // Consistent padding within the card content area
-            Column(modifier = Modifier.padding(all = 16.dp)) {
+            Column(modifier = Modifier.padding(16.dp)) {
                 Text(
                     text = recipe.title,
-                    style = MaterialTheme.typography.titleMedium, // Adjusted for card context
-                    color = MaterialTheme.colorScheme.onSurface, // Text on primary surface
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
                 Text(
                     text = "Likes: ${recipe.likes}",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant, // Secondary info
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(bottom = 4.dp)
                 )
                 Text(
                     text = "Missed Ingredients: ${recipe.missedIngredientCount}",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant // Secondary info
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
@@ -169,49 +151,48 @@ fun RecipeImage(
         model = ImageRequest.Builder(LocalContext.current)
             .data(imageUrl)
             .crossfade(true)
-            // Consider adding placeholder/error drawables if you have them
-            // .placeholder(R.drawable.placeholder_image)
-            // .error(R.drawable.error_image)
             .build()
     )
     val state = painter.state
 
-    Box(modifier = modifier, contentAlignment = Alignment.Center) { // Center content like progress/error
+    Box(modifier = modifier) {
+        // Image (visible when loaded)
         Image(
             painter = painter,
             contentDescription = contentDescription,
-            contentScale = ContentScale.Crop, // Crop is good for filling space
+            contentScale = ContentScale.Crop,
             modifier = Modifier.matchParentSize()
         )
 
+        // Overlay for loading or error
         when (state) {
             is AsyncImagePainter.State.Loading -> {
-                Box( // Ensure this Box fills the image area
-                    modifier = Modifier
+                Box(
+                    Modifier
                         .matchParentSize()
-                        .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.5f)), // Use surface with alpha
+                        .background(MaterialTheme.colorScheme.surfaceVariant),
                     contentAlignment = Alignment.Center
                 ) {
-                    CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+                    CircularProgressIndicator()
                 }
             }
             is AsyncImagePainter.State.Error -> {
-                Box( // Ensure this Box fills the image area
-                    modifier = Modifier
+                Box(
+                    Modifier
                         .matchParentSize()
-                        .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.8f)), // Use surfaceVariant
+                        .background(MaterialTheme.colorScheme.surfaceVariant),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = "Image failed to load.",
-                        style = MaterialTheme.typography.labelMedium, // Smaller text for overlay
+                        style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(8.dp) // Smaller padding for overlay
+                        modifier = Modifier.padding(16.dp)
                     )
                 }
             }
-            else -> Unit // State.Success or State.Empty
+            else -> Unit
         }
     }
 }
@@ -220,7 +201,7 @@ fun RecipeImage(
 @Composable
 fun RecipeItemPreview() {
     FoodlyTheme {
-        RecipeItem( // Update preview to reflect new parameter, even if with empty lambda
+        RecipeItem(
             recipe = Recipe(
                 id = 715415,
                 image = "https://img.spoonacular.com/recipes/715415-312x231.jpg",
@@ -232,8 +213,7 @@ fun RecipeItemPreview() {
                 unusedIngredients = emptyList(),
                 usedIngredientCount = 5,
                 usedIngredients = emptyList()
-            ),
-            onRecipeClick = {}
+            )
         )
     }
 }
@@ -267,7 +247,7 @@ fun RecipesScreenPreview_Success() {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(recipes) { recipe ->
-                RecipeItem(recipe = recipe, onRecipeClick = {}) // Update preview
+                RecipeItem(recipe = recipe)
             }
         }
     }

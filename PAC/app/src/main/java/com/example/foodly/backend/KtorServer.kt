@@ -1,8 +1,5 @@
 package com.example.foodly.backend
 
-import io.ktor.serialization.kotlinx.json.*
-
-import kotlinx.serialization.json.Json
 import java.util.concurrent.ConcurrentHashMap
 
 val recipeJsonString = """
@@ -94,7 +91,19 @@ val recipeRedLentilSoup = Recipe(
     likes = 0,
     missedIngredientCount = 11,
     missedIngredients = listOf(
-        Ingredient(aisle = "Produce", amount = 8.0, extendedName = "diced additional toppings avocado", id = 9037, image = "https://img.spoonacular.com/ingredients_100x100/avocado.jpg", meta = listOf("diced", "chopped"), name = "additional toppings avocado", original = "additional toppings: diced avocado, micro greens, chopped basil)", originalName = "additional toppings: diced avocado, micro greens, chopped basil)", unit = "servings", unitLong = "servings", unitShort = "servings")
+        Ingredient(
+            amount = 8.0,
+            extendedName = "diced additional toppings avocado",
+            id = 9037,
+            image = "https://img.spoonacular.com/ingredients_100x100/avocado.jpg",
+            meta = listOf("diced", "chopped"),
+            name = "additional toppings avocado",
+            original = "additional toppings: diced avocado, micro greens, chopped basil)",
+            originalName = "additional toppings: diced avocado, micro greens, chopped basil)",
+            unit = "servings",
+            unitLong = "servings",
+            unitShort = "servings"
+        )
         // ... (add other missed ingredients for full representation if needed for client)
     ),
     title = "Red Lentil Soup with Chicken and Turnips",
@@ -110,12 +119,36 @@ val recipeAsparagusSalad = Recipe(
     likes = 0,
     missedIngredientCount = 5,
     missedIngredients = listOf(
-        Ingredient(aisle = "Produce", amount = 1.0, extendedName = "frozen asparagus", id = 11011, image = "https://img.spoonacular.com/ingredients_100x100/asparagus.png", meta = listOf("frozen", "organic", "thawed", "(preferably )"), name = "asparagus", original = "1 bag of frozen organic asparagus (preferably thawed)", originalName = "frozen organic asparagus (preferably thawed)", unit = "bag", unitLong = "bag", unitShort = "bag")
+        Ingredient(
+            amount = 1.0,
+            extendedName = "frozen asparagus",
+            id = 11011,
+            image = "https://img.spoonacular.com/ingredients_100x100/asparagus.png",
+            meta = listOf("frozen", "organic", "thawed", "(preferably )"),
+            name = "asparagus",
+            original = "1 bag of frozen organic asparagus (preferably thawed)",
+            originalName = "frozen organic asparagus (preferably thawed)",
+            unit = "bag",
+            unitLong = "bag",
+            unitShort = "bag"
+        )
         // ... (add other missed ingredients for full representation if needed for client)
     ),
     title = "Asparagus and Cauliflower Salad with Miso Dressing",
     unusedIngredients = listOf(
-        Ingredient(aisle = "Condiments", amount = 1.0, id = 16112, image = "https://img.spoonacular.com/ingredients_100x100/miso.jpg", meta = listOf("white"), name = "miso", original = "1 tbsp white miso", originalName = "white miso", unit = "tbsp", unitLong = "tablespoon", unitShort = "tbsp", extendedName = null)
+        Ingredient(
+            amount = 1.0,
+            extendedName = null,
+            id = 16112,
+            image = "https://img.spoonacular.com/ingredients_100x100/miso.jpg",
+            meta = listOf("white"),
+            name = "miso",
+            original = "1 tbsp white miso",
+            originalName = "white miso",
+            unit = "tbsp",
+            unitLong = "tablespoon",
+            unitShort = "tbsp"
+        )
     ),
     usedIngredientCount = 0,
     usedIngredients = emptyList()

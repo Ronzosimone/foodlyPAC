@@ -13,7 +13,6 @@ object MockRecipeData {
             missedIngredientCount = 11,
             missedIngredients = listOf(
                 Ingredient(
-                    aisle = "Produce",
                     amount = 8.0,
                     extendedName = "diced additional toppings avocado",
                     id = 9037,
@@ -27,7 +26,6 @@ object MockRecipeData {
                     unitShort = "servings"
                 ),
                 Ingredient(
-                    aisle = "Produce",
                     amount = 3.0,
                     extendedName = "diced carrots",
                     id = 11124,
@@ -41,7 +39,6 @@ object MockRecipeData {
                     unitShort = "medium"
                 ),
                 Ingredient(
-                    aisle = "Produce",
                     amount = 3.0,
                     extendedName = "diced celery stalks",
                     id = 10111143,
@@ -55,7 +52,6 @@ object MockRecipeData {
                     unitShort = ""
                 ),
                 Ingredient(
-                    aisle = "Meat",
                     amount = 2.0,
                     extendedName = "shredded chicken breast",
                     id = 5064,
@@ -69,7 +65,6 @@ object MockRecipeData {
                     unitShort = "cup"
                 ),
                 Ingredient(
-                    aisle = "Produce",
                     amount = 0.5,
                     extendedName = "italian flat leaf parsley",
                     id = 10311297,
@@ -83,8 +78,8 @@ object MockRecipeData {
                     unitShort = "cup"
                 ),
                 Ingredient(
-                    aisle = "Produce",
                     amount = 6.0,
+                    extendedName = null,
                     id = 11215,
                     image = "https://img.spoonacular.com/ingredients_100x100/garlic.png",
                     meta = listOf("finely minced"),
@@ -93,12 +88,11 @@ object MockRecipeData {
                     originalName = "garlic, finely minced",
                     unit = "cloves",
                     unitLong = "cloves",
-                    unitShort = "cloves",
-                    extendedName = null
+                    unitShort = "cloves"
                 ),
                 Ingredient(
-                    aisle = "Canned and Jarred",
                     amount = 28.0,
+                    extendedName = null,
                     id = 10011693,
                     image = "https://img.spoonacular.com/ingredients_100x100/tomatoes-canned.png",
                     meta = listOf("drained and rinsed", "chopped"),
@@ -107,11 +101,9 @@ object MockRecipeData {
                     originalName = "can plum tomatoes, drained and rinsed, chopped",
                     unit = "ounce",
                     unitLong = "ounces",
-                    unitShort = "oz",
-                    extendedName = null
+                    unitShort = "oz"
                 ),
                 Ingredient(
-                    aisle = "Pasta and Rice",
                     amount = 2.0,
                     extendedName = "red dried lentils",
                     id = 10016069,
@@ -125,7 +117,6 @@ object MockRecipeData {
                     unitShort = "cup"
                 ),
                 Ingredient(
-                    aisle = "Produce",
                     amount = 1.0,
                     extendedName = "diced turnip",
                     id = 11564,
@@ -139,21 +130,19 @@ object MockRecipeData {
                     unitShort = "large"
                 ),
                 Ingredient(
-                    aisle = "Canned and Jarred",
                     amount = 8.0,
+                    extendedName = null,
                     id = 6615,
                     image = "https://img.spoonacular.com/ingredients_100x100/chicken-broth.png",
-                    meta = listOf(), 
+                    meta = listOf(),
                     name = "vegetable stock",
                     original = "8 cups vegetable stock",
                     originalName = "vegetable stock",
                     unit = "cups",
                     unitLong = "cups",
-                    unitShort = "cup",
-                    extendedName = null
+                    unitShort = "cup"
                 ),
                 Ingredient(
-                    aisle = "Produce",
                     amount = 1.0,
                     extendedName = "yellow diced onion",
                     id = 10511282,
@@ -180,7 +169,6 @@ object MockRecipeData {
             missedIngredientCount = 5, // Corrected value
             missedIngredients = listOf(
                 Ingredient(
-                    aisle = "Produce",
                     amount = 1.0,
                     extendedName = "frozen asparagus",
                     id = 11011,
@@ -194,32 +182,30 @@ object MockRecipeData {
                     unitShort = "bag"
                 ),
                 Ingredient(
-                    aisle = "Produce",
                     amount = 2.0,
+                    extendedName = null,
                     id = 11215,
                     image = "https://img.spoonacular.com/ingredients_100x100/garlic.png",
-                    meta = listOf(), 
+                    meta = listOf(),
                     name = "garlic",
                     original = "a couple of garlic cloves",
                     originalName = "a couple of garlic",
                     unit = "cloves",
                     unitLong = "cloves",
-                    unitShort = "cloves",
-                    extendedName = null
+                    unitShort = "cloves"
                 ),
                 Ingredient(
-                    aisle = "Produce",
                     amount = 0.5,
+                    extendedName = null,
                     id = 11282,
                     image = "https://img.spoonacular.com/ingredients_100x100/brown-onion.png",
-                    meta = listOf(), 
+                    meta = listOf(),
                     name = "onion",
                     original = "1/2 onion",
                     originalName = "onion",
                     unit = "",
                     unitLong = "",
-                    unitShort = "",
-                    extendedName = null
+                    unitShort = ""
                 )
             ),
             title = "Asparagus and Cauliflower Salad with Miso Dressing",

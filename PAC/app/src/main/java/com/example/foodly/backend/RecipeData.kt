@@ -17,13 +17,13 @@ data class Recipe(
     val missedIngredients: List<Ingredient>,
     val title: String,
     val unusedIngredients: List<Ingredient>, // Assuming Ingredient structure is the same
-    val usedIngredientCount: Int,
+    val usedIngredientCount: Int, // Changed to List<Ingredient> for consistency
     val usedIngredients: List<Ingredient>   // Assuming Ingredient structure is the same
 )
 
 @Serializable
 data class Ingredient(
-    val aisle: String?, // Made nullable as it might be missing
+    // Made nullable as it might be missing
     val amount: Double,
     val extendedName: String?, // Made nullable
     val id: Int,
@@ -32,9 +32,9 @@ data class Ingredient(
     val name: String,
     val original: String?, // Made nullable
     val originalName: String?, // Made nullable
-    val unit: String,
-    val unitLong: String,
-    val unitShort: String
+    val unit: String? = "kg", // Made nullable
+    val unitLong: String? = "kilogram", // Made nullable
+    val unitShort: String? = "kg" // Made nullable
 )
 
 // Root structure for parsing the provided JSON string

@@ -1,9 +1,9 @@
 package com.example.foodly.recipes
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.FavoriteBorder // Or Favorite for filled heart
@@ -14,17 +14,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import com.example.foodly.backend.Ingredient // Assuming Ingredient is in backend package
 import com.example.foodly.backend.Recipe // Assuming Recipe is in backend package
 import com.example.foodly.ui.theme.FoodlyTheme
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.graphics.Color
+import com.example.foodly.backend.Ingredient
+import kotlinx.coroutines.flow.MutableStateFlow
 
 // Mock Recipe Data (align with the structure in RecipeData.kt)
 // This can be removed if the screen exclusively relies on ViewModel passed data
@@ -37,16 +38,16 @@ val previewMockRecipe = Recipe(
     likes = 150,
     missedIngredientCount = 2,
     missedIngredients = listOf(
-        Ingredient(id = 1001, name = "Cauliflower", amount = 1.0, unit = "head", original = "1 head cauliflower", image = "cauliflower.jpg"),
-        Ingredient(id = 1002, name = "Scallions", amount = 1.0, unit = "bunch", original = "1 bunch scallions", image = "scallions.jpg")
+        com.example.foodly.backend.Ingredient( name = "Cauliflower", amount = 1.0, unit = "head", original = "1 head cauliflower", image = "cauliflower.jpg", extendedName = "spaghetti", meta = listOf("spaghetti"), originalName = "spaghetti pasta", id = 1003),
+        com.example.foodly.backend.Ingredient( name = "Scallions", amount = 1.0, unit = "bunch", original = "1 bunch scallions", image = "scallions.jpg", id = 1002, extendedName = "spaghetti", meta = listOf("spaghetti"), originalName = "spaghetti pasta")
     ),
-    usedIngredientCount = 5,
+    usedIngredientCount = 0,
     usedIngredients = listOf(
-        Ingredient(id = 1003, name = "Pasta", amount = 1.0, unit = "lb", original = "1 lb pasta", image = "pasta.jpg"),
-        Ingredient(id = 1004, name = "Garlic", amount = 4.0, unit = "cloves", original = "4 cloves garlic", image = "garlic.jpg"),
-        Ingredient(id = 1005, name = "Breadcrumbs", amount = 0.5, unit = "cup", original = "1/2 cup breadcrumbs", image = "breadcrumbs.jpg"),
-        Ingredient(id = 1006, name = "Olive Oil", amount = 2.0, unit = "tbsp", original = "2 tbsp olive oil", image = "oliveoil.jpg"),
-        Ingredient(id = 1007, name = "Salt", amount = 1.0, unit = "tsp", original = "1 tsp salt", image = "salt.jpg")
+        com.example.foodly.backend.Ingredient(id = 1003, name = "Pasta", amount = 1.0, unit = "lb", original = "1 lb pasta", image = "pasta.jpg", extendedName = "spaghetti", meta = listOf("spaghetti"), originalName = "spaghetti pasta"),
+        com.example.foodly.backend.Ingredient(id = 1004, name = "Garlic", amount = 4.0, unit = "cloves", original = "4 cloves garlic", image = "garlic.jpg",extendedName = "spaghetti", meta = listOf("spaghetti"), originalName = "spaghetti pasta"),
+        com.example.foodly.backend.Ingredient(id = 1005, name = "Breadcrumbs", amount = 0.5, unit = "cup", original = "1/2 cup breadcrumbs", image = "breadcrumbs.jpg",extendedName = "spaghetti", meta = listOf("spaghetti"), originalName = "spaghetti pasta"),
+        com.example.foodly.backend.Ingredient(id = 1006, name = "Olive Oil", amount = 2.0, unit = "tbsp", original = "2 tbsp olive oil", image = "oliveoil.jpg",extendedName = "spaghetti", meta = listOf("spaghetti"), originalName = "spaghetti pasta"),
+        com.example.foodly.backend.Ingredient(id = 1007, name = "Salt", amount = 1.0, unit = "tsp", original = "1 tsp salt", image = "salt.jpg",extendedName = "spaghetti", meta = listOf("spaghetti"), originalName = "spaghetti pasta")
     ),
     unusedIngredients = emptyList()
 )
@@ -219,8 +220,8 @@ fun RecipeDetailScreen(
 fun IngredientSection(
     title: String,
     ingredients: List<Ingredient>,
-    cardColor: androidx.compose.ui.graphics.Color = MaterialTheme.colorScheme.surface,
-    contentColor: androidx.compose.ui.graphics.Color = MaterialTheme.colorScheme.onSurface
+    cardColor: Color = MaterialTheme.colorScheme.surface,
+    contentColor: Color = MaterialTheme.colorScheme.onSurface
 ) {
     Column(modifier = Modifier.padding(horizontal = 16.dp)) {
         Text(
@@ -237,7 +238,8 @@ fun IngredientSection(
             Column(modifier = Modifier.padding(16.dp)) {
                 ingredients.forEachIndexed { index, ingredient ->
                     Text(
-                        text = ingredient.original ?: "${ingredient.amount} ${ingredient.unit} ${ingredient.name}",
+                        text = ingredient.original
+                            ?: "${ingredient.amount} ${ingredient.unit} ${ingredient.name}",
                         style = MaterialTheme.typography.bodyMedium,
                         color = contentColor
                     )
@@ -250,6 +252,7 @@ fun IngredientSection(
     }
 }
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @Preview(showBackground = true, name = "Recipe Detail Screen Preview")
 @Composable
 fun RecipeDetailScreenPreview() {
