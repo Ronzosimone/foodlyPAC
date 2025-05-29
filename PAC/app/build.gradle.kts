@@ -79,7 +79,16 @@ dependencies {
     
     implementation(libs.kotlinx.serialization.json) // Kotlinx Serialization core, already here, good.
 
+    // Coil for image loading
+    implementation("io.coil-kt:coil-compose:2.5.0")
+
+    // Vico for charts
+    implementation("com.patrykandpatryk.vico:core:1.13.1")
+    implementation("com.patrykandpatryk.vico:compose:1.13.1")
+    implementation("com.patrykandpatryk.vico:compose-m3:1.13.1")
+
     testImplementation(libs.junit)
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3") // For ViewModel tests
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))

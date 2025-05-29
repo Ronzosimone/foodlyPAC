@@ -1,15 +1,19 @@
 package com.example.foodly.data.network
 
-import com.example.foodly.backend.Recipe // Assuming RecipeData.kt is accessible
-import io.ktor.client.*
-import io.ktor.client.call.*
-import io.ktor.client.engine.android.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.client.request.*
-import io.ktor.serialization.kotlinx.json.*
-import kotlinx.serialization.json.Json
+import com.example.foodly.backend.Recipe // Keep import for context if Recipe is used in commented code
+// import io.ktor.client.*
+// import io.ktor.client.call.*
+// import io.ktor.client.engine.android.*
+// import io.ktor.client.plugins.contentnegotiation.*
+// import io.ktor.client.request.*
+// import io.ktor.serialization.kotlinx.json.*
+// import kotlinx.serialization.json.Json
 
 object RecipeService {
+    // This service is currently disabled. The app is using mock recipe data
+    // from com.example.foodly.data.mock.MockRecipeData instead.
+
+    /*
     private val client = HttpClient(Android) { // Using Android engine
         install(ContentNegotiation) {
             json(Json {
@@ -42,4 +46,5 @@ object RecipeService {
     // fun close() {
     //     client.close()
     // }
+    */
 }

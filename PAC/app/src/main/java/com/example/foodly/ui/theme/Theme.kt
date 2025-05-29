@@ -1,6 +1,5 @@
 package com.example.foodly.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -9,35 +8,73 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color // Required for explicit Color values for error
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = GreenPrimaryDark,
+    onPrimary = OnGreenPrimaryDark,
+    primaryContainer = GreenPrimaryContainerDark,
+    onPrimaryContainer = OnGreenPrimaryContainerDark,
+    secondary = GreenSecondaryDark,
+    onSecondary = OnGreenSecondaryDark,
+    secondaryContainer = GreenSecondaryContainerDark,
+    onSecondaryContainer = OnGreenSecondaryContainerDark,
+    tertiary = OrangeAccentDark,
+    onTertiary = OnOrangeAccentDark,
+    tertiaryContainer = OrangeAccentContainerDark,
+    onTertiaryContainer = OnOrangeAccentContainerDark,
+    background = BackgroundDark,
+    onBackground = OnBackgroundDark,
+    surface = SurfaceDark,
+    onSurface = OnSurfaceDark,
+    surfaceVariant = SurfaceVariantDark,
+    onSurfaceVariant = OnSurfaceVariantDark,
+    outline = OutlineDark,
+    error = Color(0xFFFFB4AB), // Standard Material error color
+    onError = Color(0xFF690005),
+    errorContainer = Color(0xFF93000A),
+    onErrorContainer = Color(0xFFFFDAD6)
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+    primary = GreenPrimaryLight,
+    onPrimary = OnGreenPrimaryLight,
+    primaryContainer = GreenPrimaryContainerLight,
+    onPrimaryContainer = OnGreenPrimaryContainerLight,
+    secondary = GreenSecondaryLight,
+    onSecondary = OnGreenSecondaryLight,
+    secondaryContainer = GreenSecondaryContainerLight,
+    onSecondaryContainer = OnGreenSecondaryContainerLight,
+    tertiary = OrangeAccentLight,
+    onTertiary = OnOrangeAccentLight,
+    tertiaryContainer = OrangeAccentContainerLight,
+    onTertiaryContainer = OnOrangeAccentContainerLight,
+    background = BackgroundLight,
+    onBackground = OnBackgroundLight,
+    surface = SurfaceLight,
+    onSurface = OnSurfaceLight,
+    surfaceVariant = SurfaceVariantLight,
+    onSurfaceVariant = OnSurfaceVariantLight,
+    outline = OutlineLight,
+    error = Color(0xFFBA1A1A), // Standard Material error color
+    onError = Color(0xFFFFFFFF),
+    errorContainer = Color(0xFFFFDAD6),
+    onErrorContainer = Color(0xFF410002)
 
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
+    /* Other default colors to override if needed
+    inversePrimary = ...,
+    surfaceTint = ...,
+    outlineVariant = ...,
+    scrim = ...
     */
 )
 
 @Composable
 fun FoodlyTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    // Dynamic color is disabled for this overhaul to ensure custom theme is applied.
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -45,14 +82,15 @@ fun FoodlyTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = Typography, // Typography will be updated next
         content = content
+        // Consider adding shapes here if you want to customize them globally
+        // shapes = Shapes(small = ..., medium = ..., large = ...)
     )
 }

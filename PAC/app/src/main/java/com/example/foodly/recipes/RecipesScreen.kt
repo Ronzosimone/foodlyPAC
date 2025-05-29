@@ -9,12 +9,17 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource // For placeholder/error drawables if available
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import com.example.foodly.R // Assuming you might have placeholder/error drawables in res
 import com.example.foodly.backend.Recipe // Ensure this import is correct
+import com.example.foodly.ui.theme.FoodlyTheme // Import your custom theme
 
 @Composable
 fun RecipesScreen(
@@ -32,8 +37,12 @@ fun RecipesScreen(
             }
             is RecipesUiState.Success -> {
                 if (state.recipes.isEmpty()) {
-                    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-                        Text("No recipes found. Try refreshing.", fontSize = 18.sp)
+                    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize().padding(16.dp)) {
+                        Text(
+                            text = "No recipes found. Try refreshing!",
+                            style = MaterialTheme.typography.headlineSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
                     }
                 } else {
                     LazyColumn(
@@ -47,19 +56,22 @@ fun RecipesScreen(
                 }
             }
             is RecipesUiState.Error -> {
-                Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+                Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize().padding(16.dp)) {
                     Text(
-                        text = "Error: ${state.message}\nTap to retry.",
-                        fontSize = 18.sp,
+                        text = "Error: ${state.message}\nTap to retry.", // Consider making retry clickable
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.error,
                         modifier = Modifier.padding(16.dp)
-                        // TODO: Add a click listener to retry viewModel.fetchRecipes()
                     )
                 }
             }
             is RecipesUiState.Idle -> {
-                 Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-                    Text("Welcome! Let's find some recipes.", fontSize = 18.sp)
-                    // Or trigger fetch if not done in init
+                 Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize().padding(16.dp)) {
+                    Text(
+                        "Welcome! Let's find some recipes.",
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
             }
         }
@@ -69,68 +81,126 @@ fun RecipesScreen(
 @Composable
 fun RecipeItem(recipe: Recipe, modifier: Modifier = Modifier) {
     Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(IntrinsicSize.Min), // Ensure card wraps content or has min height
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        modifier = modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
-            // Placeholder for Image - Coil/Glide would go here
-            // For now, just display the image URL as text if you want.
-            // Image(painter = rememberAsyncImagePainter(recipe.image), contentDescription = recipe.title)
-            Box(
+        Column {
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(recipe.image)
+                    .crossfade(true)
+                    // Placeholder and error can be generic or from R.drawable if you add them
+                    // .placeholder(painterResource(id = R.drawable.placeholder_image))
+                    // .error(painterResource(id = R.drawable.error_image))
+                    .build(),
+                contentDescription = recipe.title,
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(180.dp) // Fixed height for image placeholder
-                    .padding(bottom = 8.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text("Image URL: ${recipe.image}", fontSize = 12.sp)
-            }
+                    .height(180.dp),
+                // Fallback for preview or if you don't have drawable resources yet
+                onLoading = { Text("Loading...", modifier = Modifier.align(Alignment.Center)) },
+                onError = { Text("Image failed to load.", modifier = Modifier.align(Alignment.Center)) }
+            )
 
-            Text(
-                text = recipe.title,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 4.dp)
-            )
-            // Add more details if needed, e.g., missed ingredients count
-            Text(
-                text = "Missed Ingredients: ${recipe.missedIngredientCount}",
-                fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            // Further details like ingredients list can be added here
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(
+                    text = recipe.title,
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                Text(
+                    text = "Likes: ${recipe.likes}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+                Text(
+                    text = "Missed Ingredients: ${recipe.missedIngredientCount}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                // You can expand this to show a snippet of missedIngredients if desired
+            }
         }
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun RecipesScreenPreview_Success() {
-    MaterialTheme {
-        // Provide a mock ViewModel or directly test with Success state
-        RecipesScreen() // This will show Idle or Loading by default in preview
-    }
-}
-
-@Preview(showBackground = true)
+@Preview(showBackground = true, name = "Recipe Item Preview")
 @Composable
 fun RecipeItemPreview() {
-    MaterialTheme {
+    FoodlyTheme { // Use your custom theme for preview
         RecipeItem(
             recipe = Recipe(
                 id = 715415,
-                image = "https://img.spoonacular.com/recipes/715415-312x231.jpg",
+                image = "https://img.spoonacular.com/recipes/715415-312x231.jpg", // A real image URL
                 imageType = "jpg",
-                likes = 0,
-                missedIngredientCount = 11,
-                missedIngredients = emptyList(), // Simplified for preview
-                title = "Red Lentil Soup with Chicken and Turnips",
+                likes = 120,
+                missedIngredientCount = 3,
+                missedIngredients = emptyList(),
+                title = "Delicious Red Lentil Soup with Chicken and Turnips",
                 unusedIngredients = emptyList(),
-                usedIngredientCount = 0,
+                usedIngredientCount = 5,
                 usedIngredients = emptyList()
             )
         )
+    }
+}
+
+@Preview(showBackground = true, name = "Recipes Screen Success")
+@Composable
+fun RecipesScreenPreview_Success() {
+    FoodlyTheme {
+        // Mocking a success state for preview
+        val recipes = listOf(
+            Recipe(id = 1, title = "Spaghetti Bolognese", image = "url1", imageType = "jpg", likes = 150, missedIngredientCount = 2, missedIngredients = emptyList(), unusedIngredients = emptyList(), usedIngredientCount = 3, usedIngredients = emptyList()),
+            Recipe(id = 2, title = "Chicken Curry", image = "url2", imageType = "jpg", likes = 200, missedIngredientCount = 1, missedIngredients = emptyList(), unusedIngredients = emptyList(), usedIngredientCount = 4, usedIngredients = emptyList())
+        )
+        // This preview won't show the ViewModel states directly, but you can mock the UI state
+        // For a more direct preview of states, you'd pass the state to RecipesScreenContent composable
+        Surface(modifier = Modifier.fillMaxSize()) {
+             LazyColumn(
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                items(recipes) { recipe ->
+                    RecipeItem(recipe = recipe)
+                }
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true, name = "Recipes Screen Error")
+@Composable
+fun RecipesScreenPreview_Error() {
+    FoodlyTheme {
+        Surface(modifier = Modifier.fillMaxSize()) {
+            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize().padding(16.dp)) {
+                Text(
+                    text = "Error: Failed to load recipes.\nTap to retry.",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true, name = "Recipes Screen Empty")
+@Composable
+fun RecipesScreenPreview_Empty() {
+    FoodlyTheme {
+        Surface(modifier = Modifier.fillMaxSize()) {
+            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize().padding(16.dp)) {
+                Text(
+                    text = "No recipes found. Try refreshing!",
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
     }
 }
