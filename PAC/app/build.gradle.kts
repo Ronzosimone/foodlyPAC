@@ -46,6 +46,8 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "META-INF/INDEX.LIST"
+            excludes += "META-INF/io.netty.versions.properties"
         }
     }
 }
@@ -83,9 +85,11 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.5.0")
 
     // Vico for charts
-    implementation("com.patrykandpatryk.vico:core:1.13.1")
-    implementation("com.patrykandpatryk.vico:compose:1.13.1")
-    implementation("com.patrykandpatryk.vico:compose-m3:1.13.1")
+    implementation(libs.core)
+    implementation(libs.compose)
+    implementation(libs.compose.m3)
+    implementation(libs.compose.m3)
+
 
     testImplementation(libs.junit)
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3") // For ViewModel tests
@@ -93,6 +97,8 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
+
+    implementation("io.coil-kt:coil-compose:2.4.0")
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }

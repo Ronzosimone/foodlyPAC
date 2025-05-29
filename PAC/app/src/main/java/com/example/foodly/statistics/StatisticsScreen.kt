@@ -1,5 +1,6 @@
 package com.example.foodly.statistics
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -11,21 +12,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.foodly.ui.theme.FoodlyTheme // Import your custom theme
+import com.example.foodly.ui.theme.FoodlyTheme
 import com.patrykandpatryk.vico.compose.axis.horizontal.rememberBottomAxis
 import com.patrykandpatryk.vico.compose.axis.vertical.rememberStartAxis
 import com.patrykandpatryk.vico.compose.chart.Chart
 import com.patrykandpatryk.vico.compose.chart.column.columnChart
-import com.patrykandpatryk.vico.compose.component.rememberLineComponent
-import com.patrykandpatryk.vico.compose.component.rememberTextComponent
+import com.patrykandpatryk.vico.compose.component.shapeComponent
+import com.patrykandpatryk.vico.compose.component.textComponent
 import com.patrykandpatryk.vico.compose.dimensions.dimensionsOf
-import com.patrykandpatryk.vico.compose.style.currentChartStyle
 import com.patrykandpatryk.vico.core.axis.AxisPosition
 import com.patrykandpatryk.vico.core.axis.formatter.AxisValueFormatter
 import com.patrykandpatryk.vico.core.component.shape.Shapes
+import com.patrykandpatryk.vico.core.component.text.TextComponent
 import com.patrykandpatryk.vico.core.entry.ChartEntryModelProducer
 import com.patrykandpatryk.vico.core.entry.entryOf
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StatisticsScreen(
     modifier: Modifier = Modifier,
@@ -34,11 +36,11 @@ fun StatisticsScreen(
     val weeklyKcalData by viewModel.weeklyKcalData.collectAsState()
     val healthyScore by viewModel.healthyScoreData.collectAsState()
 
-    FoodlyTheme { // Ensure the screen uses the FoodlyTheme
+    FoodlyTheme {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text("Le tue Statistiche") }, // "Your Statistics"
+                    title = { Text("Le tue Statistiche") },
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
                         titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
@@ -71,7 +73,7 @@ fun KcalConsumptionCard(kcalData: Map<String, Float>) {
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
-                text = "Consumo Kcal Settimanale", // "Weekly Kcal Consumption"
+                text = "Consumo Kcal Settimanale",
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(bottom = 16.dp)
@@ -84,44 +86,38 @@ fun KcalConsumptionCard(kcalData: Map<String, Float>) {
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             } else {
-                val chartEntryModelProducer = ChartEntryModelProducer(
-                    kcalData.entries.mapIndexed { index, entry -> entryOf(index.toFloat(), entry.value) }
+                val modelProducer = ChartEntryModelProducer(
+                    kcalData.entries.mapIndexed { index, entry ->
+                        entryOf(index.toFloat(), entry.value)
+                    }
                 )
                 val days = kcalData.keys.toList()
-                val bottomAxisValueFormatter = AxisValueFormatter<AxisPosition.Horizontal.Bottom> { value, _ ->
+                val formatter = AxisValueFormatter<AxisPosition.Horizontal.Bottom> { value, _ ->
                     days.getOrNull(value.toInt()) ?: ""
                 }
 
                 Chart(
                     chart = columnChart(
                         columns = listOf(
-                            rememberLineComponent(
-                                color = MaterialTheme.colorScheme.primary,
-                                thickness = 16.dp, // Adjust thickness of bars
-                                shape = Shapes.roundedCornerShape(topPercent = 20) // Rounded tops for bars
-                            )
+
                         ),
-                        spacing = 8.dp // Spacing between bars
+                        spacing = 8.dp
                     ),
-                    chartModelProducer = chartEntryModelProducer,
+                    chartModelProducer = modelProducer,
                     startAxis = rememberStartAxis(
-                        titleComponent = rememberTextComponent(
-                            color = MaterialTheme.colorScheme.onBackground,
-                            padding = dimensionsOf(end = 8.dp)
-                        ),
                         title = "Kcal"
                     ),
                     bottomAxis = rememberBottomAxis(
-                        valueFormatter = bottomAxisValueFormatter,
-                        titleComponent = rememberTextComponent(
+                        valueFormatter = formatter,
+                        titleComponent = textComponent(
                             color = MaterialTheme.colorScheme.onBackground,
                             padding = dimensionsOf(top = 4.dp)
                         ),
-                        title = "Giorno" // "Day"
+                        title = "Giorno"
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(200.dp) // Adjust height as needed
+                        .height(200.dp)
                 )
             }
         }
@@ -137,28 +133,30 @@ fun HealthyScoreCard(score: Float) {
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
-                text = "Punteggio Salute", // "Healthy Score"
+                text = "Punteggio Salute",
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(bottom = 12.dp)
             )
             Row(verticalAlignment = Alignment.CenterVertically) {
                 LinearProgressIndicator(
-                    progress = { score / 100f },
-                    modifier = Modifier.weight(1f).height(12.dp),
-                    color = getThemedScoreColor(score), // Use themed color
-                    trackColor = MaterialTheme.colorScheme.surfaceTint // A less prominent track color
+                    progress = score / 100f,
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(12.dp),
+                    color = getThemedScoreColor(score),
+                    trackColor = MaterialTheme.colorScheme.surfaceTint
                 )
                 Text(
                     text = "${score.toInt()}/100",
                     style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant, // Use themed color
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(start = 12.dp)
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                "Il tuo punteggio salute settimanale.", // "Your weekly healthy score."
+                "Il tuo punteggio salute settimanale.",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -169,30 +167,39 @@ fun HealthyScoreCard(score: Float) {
 @Composable
 fun getThemedScoreColor(score: Float): Color {
     return when {
-        score < 40f -> MaterialTheme.colorScheme.error // Use theme's error color
-        score < 70f -> MaterialTheme.colorScheme.tertiary // Use theme's tertiary/accent
-        else -> MaterialTheme.colorScheme.primary // Use theme's primary color
+        score < 40f -> MaterialTheme.colorScheme.error
+        score < 70f -> MaterialTheme.colorScheme.tertiary
+        else -> MaterialTheme.colorScheme.primary
     }
 }
 
-
-@Preview(showBackground = true, name = "Statistics Screen Preview")
+@Preview(showBackground = true)
 @Composable
 fun StatisticsScreenPreview() {
-    FoodlyTheme { // Ensure preview uses the app's theme
+    FoodlyTheme {
         StatisticsScreen()
     }
 }
 
-@Preview(name = "Kcal Card Preview")
+@Preview(showBackground = true)
 @Composable
 fun KcalConsumptionCardPreview() {
     FoodlyTheme {
-        KcalConsumptionCard(mapOf("Lun" to 2000f, "Mar" to 1800f, "Mer" to 2200f, "Gio" to 1900f, "Ven" to 2300f, "Sab" to 2500f, "Dom" to 2100f))
+        KcalConsumptionCard(
+            mapOf(
+                "Lun" to 2000f,
+                "Mar" to 1800f,
+                "Mer" to 2200f,
+                "Gio" to 1900f,
+                "Ven" to 2300f,
+                "Sab" to 2500f,
+                "Dom" to 2100f
+            )
+        )
     }
 }
 
-@Preview(name = "Score Card Preview")
+@Preview(showBackground = true)
 @Composable
 fun HealthyScoreCardPreview() {
     FoodlyTheme {
