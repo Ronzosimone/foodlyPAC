@@ -36,35 +36,57 @@ fun PantryScreen(
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
+        containerColor = MaterialTheme.colorScheme.background, // Set screen background color
         floatingActionButton = {
-            FloatingActionButton(onClick = {
-                editingItem = null // Ensure we are in "add mode"
-                showDialog = true
-            }) {
+            FloatingActionButton(
+                onClick = {
+                    editingItem = null // Ensure we are in "add mode"
+                    showDialog = true
+                },
+                containerColor = MaterialTheme.colorScheme.primaryContainer, // M3 standard FAB color
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            ) {
                 Icon(Icons.Filled.Add, contentDescription = "Add Ingredient")
             }
         },
         bottomBar = {
-            Button(
-                onClick = {
-                    Toast.makeText(context, "Recipe recommendation coming soon!", Toast.LENGTH_SHORT).show()
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
+            // Consider using a BottomAppBar if more actions are planned, or just a styled Button
+            Surface( // Add a surface for elevation and theming if desired for bottom bar area
+                modifier = Modifier.fillMaxWidth(),
+                shadowElevation = 8.dp, // Example elevation for bottom bar area
+                color = MaterialTheme.colorScheme.surface // M3 bottom app bars often use surface
             ) {
-                Text("Consigliami una ricetta")
+                Button(
+                    onClick = {
+                        Toast.makeText(context, "Recipe recommendation coming soon!", Toast.LENGTH_SHORT).show()
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp), // Keep padding for the button itself
+                    // Uses default M3 Button styling (primary container)
+                ) {
+                    Text("Consigliami una ricetta")
+                }
             }
         }
     ) { paddingValues ->
-        Column(modifier = Modifier.padding(paddingValues)) {
+        Column(modifier = Modifier.padding(paddingValues).fillMaxSize()) { // Ensure column fills size
             if (userPantryItems.isEmpty()) {
-                Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize().padding(16.dp)) {
-                    Text("Your pantry is empty. Add some ingredients!", fontSize = 18.sp)
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp)
+                ) {
+                    Text(
+                        "Your pantry is empty. Add some ingredients!",
+                        style = MaterialTheme.typography.titleMedium, // Use theme typography
+                        color = MaterialTheme.colorScheme.onSurfaceVariant // Theme color
+                    )
                 }
             } else {
                 LazyColumn(
-                    contentPadding = PaddingValues(16.dp),
+                    contentPadding = PaddingValues(all = 16.dp), // Consistent padding
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     items(userPantryItems, key = { it.id }) { item ->
@@ -108,22 +130,35 @@ fun PantryListItem(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onEdit() }, // Allow editing by clicking the card
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            .clickable { onEdit() },
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp), // Keep low elevation
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface) // Use surface color
     ) {
         Row(
             modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 12.dp)
+                .padding(horizontal = 16.dp, vertical = 12.dp) // Consistent padding
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Column(modifier = Modifier.weight(1f)) {
-                Text(text = item.pantryIngredient.name, style = MaterialTheme.typography.titleMedium)
-                Text(text = "${item.quantity} ${item.unit}", style = MaterialTheme.typography.bodySmall)
+                Text(
+                    text = item.pantryIngredient.name,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface // Theme color
+                )
+                Text(
+                    text = "${item.quantity} ${item.unit}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant // Theme color
+                )
             }
             IconButton(onClick = onRemove) {
-                Icon(Icons.Filled.Delete, contentDescription = "Remove item")
+                Icon(
+                    Icons.Filled.Delete,
+                    contentDescription = "Remove item",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant // Explicit tint if needed
+                )
             }
         }
     }
@@ -170,16 +205,18 @@ fun AddEditPantryItemDialog(
                         readOnly = true,
                         label = { Text("Ingredient") },
                         trailingIcon = { Icon(Icons.Filled.ArrowDropDown, "Select ingredient", Modifier.clickable { expandedDropdown = true }) },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        // Rely on M3 default colors for OutlinedTextField
                     )
                     DropdownMenu(
                         expanded = expandedDropdown,
                         onDismissRequest = { expandedDropdown = false },
-                        modifier = Modifier.fillMaxWidth(0.8f) // Adjust width as needed
+                        modifier = Modifier.fillMaxWidth(0.8f), // Adjust width as needed
+                        // DropdownMenu background defaults to M3 surface
                     ) {
                         viewModel.predefinedIngredients.forEach { ingredient ->
                             DropdownMenuItem(
-                                text = { Text(ingredient.name) },
+                                text = { Text(ingredient.name, color = MaterialTheme.colorScheme.onSurface) }, // Ensure text color
                                 onClick = {
                                     selectedIngredient = ingredient
                                     unit = ingredient.defaultUnit // Reset unit to default of new ingredient
@@ -190,7 +227,7 @@ fun AddEditPantryItemDialog(
                     }
                 }
 
-                // Quantity TextField
+                // Quantity TextField - Rely on M3 defaults
                 OutlinedTextField(
                     value = quantityStr,
                     onValueChange = { quantityStr = it.filter { char -> char.isDigit() || char == '.' } },
@@ -200,7 +237,7 @@ fun AddEditPantryItemDialog(
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                // Unit TextField
+                // Unit TextField - Rely on M3 defaults
                 OutlinedTextField(
                     value = unit,
                     onValueChange = { unit = it },
@@ -211,23 +248,29 @@ fun AddEditPantryItemDialog(
             }
         },
         confirmButton = {
-            Button(onClick = {
-                val quantity = quantityStr.toDoubleOrNull()
-                if (quantity == null || quantity <= 0) {
-                    Toast.makeText(context, "Please enter a valid quantity.", Toast.LENGTH_SHORT).show()
-                    return@Button
+            Button(
+                onClick = {
+                    val quantity = quantityStr.toDoubleOrNull()
+                    if (quantity == null || quantity <= 0) {
+                        Toast.makeText(context, "Please enter a valid quantity.", Toast.LENGTH_SHORT).show()
+                        return@Button
+                    }
+                    if (unit.isBlank()) {
+                        Toast.makeText(context, "Please enter a unit.", Toast.LENGTH_SHORT).show()
+                        return@Button
+                    }
+                    onConfirm(selectedIngredient, quantity, unit)
                 }
-                if (unit.isBlank()) {
-                     Toast.makeText(context, "Please enter a unit.", Toast.LENGTH_SHORT).show()
-                    return@Button
-                }
-                onConfirm(selectedIngredient, quantity, unit)
-            }) {
+                // Default M3 Button styling
+            ) {
                 Text("Confirm")
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) {
+            TextButton(
+                onClick = onDismiss
+                // Default M3 TextButton styling (text color will be primary)
+            ) {
                 Text("Cancel")
             }
         }

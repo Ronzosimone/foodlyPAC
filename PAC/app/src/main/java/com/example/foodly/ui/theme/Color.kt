@@ -2,50 +2,50 @@ package com.example.foodly.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Light Theme Colors
-val GreenPrimaryLight = Color(0xFF386A20) // Darker Green
-val OnGreenPrimaryLight = Color(0xFFFFFFFF) // White
-val GreenPrimaryContainerLight = Color(0xFFB8F398) // Light Green
-val OnGreenPrimaryContainerLight = Color(0xFF0A2000) // Very Dark Green/Black
+// Light Theme Colors - Modern Blue Palette
+val BluePrimaryLight = Color(0xFF0062A3)
+val OnBluePrimaryLight = Color(0xFFFFFFFF)
+val BluePrimaryContainerLight = Color(0xFFD0E4FF)
+val OnBluePrimaryContainerLight = Color(0xFF001D35)
 
-val GreenSecondaryLight = Color(0xFF53634F) // Desaturated Green
-val OnGreenSecondaryLight = Color(0xFFFFFFFF) // White
-val GreenSecondaryContainerLight = Color(0xFFD7E8CE) // Very Light Green/Beige
-val OnGreenSecondaryContainerLight = Color(0xFF111F0F) // Dark Green/Black
+val BlueSecondaryLight = Color(0xFF525F70)
+val OnBlueSecondaryLight = Color(0xFFFFFFFF)
+val BlueSecondaryContainerLight = Color(0xFFD5E4F7)
+val OnBlueSecondaryContainerLight = Color(0xFF0E1C2B)
 
-val OrangeAccentLight = Color(0xFF7D5700) // Burnt Orange
-val OnOrangeAccentLight = Color(0xFFFFFFFF) // White
-val OrangeAccentContainerLight = Color(0xFFFFDEAD) // Light Orange/Peach
-val OnOrangeAccentContainerLight = Color(0xFF271900) // Dark Brown
+val AccentLight = Color(0xFF006A6A) // Cyan/Teal Accent
+val OnAccentLight = Color(0xFFFFFFFF)
+val AccentContainerLight = Color(0xFF70F7F7)
+val OnAccentContainerLight = Color(0xFF002020)
 
-val BackgroundLight = Color(0xFFFDFDF5) // Off-white
-val OnBackgroundLight = Color(0xFF1A1C18) // Dark Gray
-val SurfaceLight = Color(0xFFFDFDF5) // Off-white (same as background)
-val OnSurfaceLight = Color(0xFF1A1C18) // Dark Gray
-val SurfaceVariantLight = Color(0xFFDFE4D8) // Light Gray-Green
-val OnSurfaceVariantLight = Color(0xFF43483F) // Gray
-val OutlineLight = Color(0xFF73796E) // Medium Gray-Green
+val BackgroundLight = Color(0xFFFCFCFF)
+val OnBackgroundLight = Color(0xFF1A1C1E)
+val SurfaceLight = Color(0xFFFCFCFF)
+val OnSurfaceLight = Color(0xFF1A1C1E)
+val SurfaceVariantLight = Color(0xFFDFE2EB)
+val OnSurfaceVariantLight = Color(0xFF42474E)
+val OutlineLight = Color(0xFF73777F)
 
-// Dark Theme Colors
-val GreenPrimaryDark = Color(0xFF9DD67F) // Lighter Green
-val OnGreenPrimaryDark = Color(0xFF113800) // Very Dark Green
-val GreenPrimaryContainerDark = Color(0xFF26510A) // Dark Green
-val OnGreenPrimaryContainerDark = Color(0xFFB8F398) // Light Green
+// Dark Theme Colors - Modern Blue Palette
+val BluePrimaryDark = Color(0xFF9BCBFF)
+val OnBluePrimaryDark = Color(0xFF003355)
+val BluePrimaryContainerDark = Color(0xFF004A77)
+val OnBluePrimaryContainerDark = Color(0xFFD0E4FF)
 
-val GreenSecondaryDark = Color(0xFFBACBAD) // Light Desaturated Green
-val OnGreenSecondaryDark = Color(0xFF253423) // Dark Green
-val GreenSecondaryContainerDark = Color(0xFF3C4B38) // Mid-Dark Green
-val OnGreenSecondaryContainerDark = Color(0xFFD7E8CE) // Very Light Green/Beige
+val BlueSecondaryDark = Color(0xFFB9C8DA)
+val OnBlueSecondaryDark = Color(0xFF233141)
+val BlueSecondaryContainerDark = Color(0xFF3A4758)
+val OnBlueSecondaryContainerDark = Color(0xFFD5E4F7)
 
-val OrangeAccentDark = Color(0xFFFABD52) // Lighter Orange
-val OnOrangeAccentDark = Color(0xFF412D00) // Dark Brown
-val OrangeAccentContainerDark = Color(0xFF5E4200) // Mid Brown
-val OnOrangeAccentContainerDark = Color(0xFFFFDEAD) // Light Orange/Peach
+val AccentDark = Color(0xFF4EDADA) // Cyan/Teal Accent
+val OnAccentDark = Color(0xFF003737)
+val AccentContainerDark = Color(0xFF005050)
+val OnAccentContainerDark = Color(0xFF70F7F7)
 
-val BackgroundDark = Color(0xFF1A1C18) // Dark Gray
-val OnBackgroundDark = Color(0xFFE2E3DC) // Light Gray
-val SurfaceDark = Color(0xFF1A1C18) // Dark Gray (same as background)
-val OnSurfaceDark = Color(0xFFE2E3DC) // Light Gray
-val SurfaceVariantDark = Color(0xFF43483F) // Gray
-val OnSurfaceVariantDark = Color(0xFFC3C8BC) // Light Gray-Green
-val OutlineDark = Color(0xFF8D9387) // Medium-Light Gray-Green
+val BackgroundDark = Color(0xFF1A1C1E)
+val OnBackgroundDark = Color(0xFFE2E2E6)
+val SurfaceDark = Color(0xFF1A1C1E)
+val OnSurfaceDark = Color(0xFFE2E2E6)
+val SurfaceVariantDark = Color(0xFF42474E)
+val OnSurfaceVariantDark = Color(0xFFC3C7CF)
+val OutlineDark = Color(0xFF8C9199)

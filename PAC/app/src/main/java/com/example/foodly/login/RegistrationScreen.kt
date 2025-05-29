@@ -32,70 +32,62 @@ fun RegistrationScreen(
     var password by rememberSaveable { mutableStateOf("") }
     var confirmPassword by rememberSaveable { mutableStateOf("") }
 
-    val backgroundBrush = Brush.verticalGradient(
-        colors = listOf(
-            MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
-            MaterialTheme.colorScheme.background
-        )
-    )
-
+    // Use solid background color for a cleaner M3 look
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(backgroundBrush)
-            .padding(24.dp),
+            .background(MaterialTheme.colorScheme.background) // Solid background
+            .padding(24.dp), // Keep padding
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Card(
             shape = CircleShape,
-            elevation = CardDefaults.elevatedCardElevation(defaultElevation = 8.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp), // Consistent elevation
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface), // Use surface for card
             modifier = Modifier
                 .size(120.dp) // Smaller logo for registration
-                .clip(CircleShape)
+                .clip(CircleShape) // clip is redundant
         ) {
             Image(
                 painter = painterResource(R.drawable.logo), // Ensure this drawable exists
                 contentDescription = "Logo Foodly",
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize() // Image fills the card
             )
         }
 
-        Spacer(Modifier.height(20.dp))
+        Spacer(Modifier.height(24.dp)) // Adjusted spacing
         Text(
             text = "Create your Foodly Account",
-            style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.primary
+            style = MaterialTheme.typography.headlineSmall, // Adjusted style
+            color = MaterialTheme.colorScheme.primary // Keep primary color for title
         )
         Spacer(Modifier.height(16.dp))
 
+        // Email Field - Rely on M3 defaults
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
             label = { Text("Email") },
             singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                cursorColor = MaterialTheme.colorScheme.primary
-            )
+            modifier = Modifier.fillMaxWidth()
+            // Removed explicit colors
         )
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(16.dp)) // Consistent spacing
 
+        // Password Field - Rely on M3 defaults
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
             label = { Text("Password") },
             singleLine = true,
             visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth(),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                cursorColor = MaterialTheme.colorScheme.primary
-            )
+            modifier = Modifier.fillMaxWidth()
+            // Removed explicit colors
         )
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(16.dp)) // Consistent spacing
 
+        // Confirm Password Field - Rely on M3 defaults
         OutlinedTextField(
             value = confirmPassword,
             onValueChange = { confirmPassword = it },
@@ -103,36 +95,34 @@ fun RegistrationScreen(
             singleLine = true,
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth(),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                cursorColor = MaterialTheme.colorScheme.primary
-            ),
+            // Removed explicit colors
             isError = registrationUiState is RegistrationUiState.Error && (registrationUiState as RegistrationUiState.Error).message.contains("Passwords do not match")
         )
-        Spacer(Modifier.height(20.dp))
+        Spacer(Modifier.height(24.dp)) // Adjusted spacing
 
+        // Register Button
         Button(
             onClick = { viewModel.register(email, password, confirmPassword) },
             enabled = registrationUiState != RegistrationUiState.Loading,
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(12.dp)
+            modifier = Modifier.fillMaxWidth()
+            // shape = RoundedCornerShape(12.dp) // Removed for M3 default
         ) {
             if (registrationUiState == RegistrationUiState.Loading) {
                 CircularProgressIndicator(
                     modifier = Modifier.size(24.dp),
-                    color = MaterialTheme.colorScheme.onPrimary
+                    color = MaterialTheme.colorScheme.onPrimary // Correct
                 )
             } else {
-                Text("Register")
+                Text("Register") // Correct
             }
         }
 
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(16.dp)) // Consistent spacing
 
         if (registrationUiState is RegistrationUiState.Error) {
             Text(
                 text = (registrationUiState as RegistrationUiState.Error).message,
-                color = MaterialTheme.colorScheme.error,
+                color = MaterialTheme.colorScheme.error, // Correct
                 style = MaterialTheme.typography.bodyMedium
             )
         }

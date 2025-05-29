@@ -38,110 +38,101 @@ fun LoginScreen(
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
 
-    // Gradient di sfondo (dal verde chiaro al bianco)
-    val backgroundBrush = Brush.verticalGradient(
-        colors = listOf(
-            MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
-            MaterialTheme.colorScheme.background
-        )
-    )
-
+    // Use solid background color for a cleaner M3 look
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(backgroundBrush)
-            .padding(24.dp),
+            .background(MaterialTheme.colorScheme.background) // Solid background
+            .padding(24.dp), // Keep padding
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        // Logo circolare
+        // Logo in a Card
         Card(
             shape = CircleShape,
-            elevation = elevatedCardElevation(defaultElevation = 8.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp), // Consistent elevation
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface), // Use surface for card
             modifier = Modifier
                 .size(150.dp)
-                .clip(CircleShape)
+                .clip(CircleShape) // clip is redundant if Card shape is CircleShape, but harmless
         ) {
             Image(
                 painter = painterResource(R.drawable.logo),
                 contentDescription = "Logo Foodly",
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize() // Image fills the card
             )
         }
 
-        Spacer(Modifier.height(24.dp))
+        Spacer(Modifier.height(32.dp)) // Increased spacing
         Text(
             text = "Benvenuto in Foodly!",
-            style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.primary
+            style = MaterialTheme.typography.headlineSmall, // Adjusted style for prominence
+            color = MaterialTheme.colorScheme.primary // Keep primary color for title
         )
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(16.dp)) // Increased spacing
 
-        // Campo Email
+        // Email Field - Rely on M3 defaults for OutlinedTextField colors
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
             label = { Text("Email") },
             singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
-            colors = outlinedTextFieldColors(
-                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                cursorColor = MaterialTheme.colorScheme.primary
-            )
+            modifier = Modifier.fillMaxWidth()
+            // Removed explicit colors to use M3 defaults
+            // focusedBorderColor will be primary, cursorColor primary, label onSurfaceVariant
         )
 
         Spacer(Modifier.height(16.dp))
 
-        // Campo Password
+        // Password Field - Rely on M3 defaults
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
             label = { Text("Password") },
             singleLine = true,
             visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth(),
-            colors = outlinedTextFieldColors(
-                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                cursorColor = MaterialTheme.colorScheme.primary
-            )
+            modifier = Modifier.fillMaxWidth()
+            // Removed explicit colors
         )
 
-        Spacer(Modifier.height(24.dp))
+        Spacer(Modifier.height(32.dp)) // Increased spacing
 
-        // Pulsante Accedi
+        // Login Button
         Button(
             onClick = { viewModel.login(email, password) },
             enabled = loginUiState != LoginUiState.Loading,
-            modifier = Modifier
-                .fillMaxWidth(),
-            shape = RoundedCornerShape(12.dp)
+            modifier = Modifier.fillMaxWidth(),
+            // M3 buttons have standard shapes, explicit shape might not be needed unless specific design
+            // shape = RoundedCornerShape(12.dp) // Can be removed for M3 default
         ) {
             if (loginUiState == LoginUiState.Loading) {
                 CircularProgressIndicator(
                     modifier = Modifier.size(24.dp),
-                    color = MaterialTheme.colorScheme.onPrimary
+                    color = MaterialTheme.colorScheme.onPrimary // Correct for Button text color
                 )
             } else {
-                Text("Accedi")
+                Text("Accedi") // Text color will be onPrimary
             }
         }
 
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(16.dp)) // Increased spacing
 
         if (loginUiState is LoginUiState.Error) {
             Text(
                 text = (loginUiState as LoginUiState.Error).message,
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodyMedium
+                color = MaterialTheme.colorScheme.error, // Correct for error messages
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(bottom = 8.dp) // Add some bottom padding
             )
-            Spacer(Modifier.height(12.dp))
+            // Spacer(Modifier.height(12.dp)) // Adjusted by padding
         }
 
+        // TextButtons - Colors are fine
         TextButton(onClick = { /* TODO: Forgot password */ }) {
             Text("Password dimenticata?", color = MaterialTheme.colorScheme.secondary)
         }
         Spacer(Modifier.height(8.dp))
-        TextButton(onClick = onNavigateToRegister) { // Navigate to Registration
+        TextButton(onClick = onNavigateToRegister) {
             Text("Non hai un account? Registrati", color = MaterialTheme.colorScheme.primary)
         }
     }

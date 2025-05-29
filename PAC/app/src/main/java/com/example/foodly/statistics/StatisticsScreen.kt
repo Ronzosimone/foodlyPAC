@@ -36,30 +36,32 @@ fun StatisticsScreen(
     val weeklyKcalData by viewModel.weeklyKcalData.collectAsState()
     val healthyScore by viewModel.healthyScoreData.collectAsState()
 
-    FoodlyTheme {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = { Text("Le tue Statistiche") },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                    )
+    // FoodlyTheme is already applied at a higher level, typically in MainActivity or App composable.
+    // If this screen is used independently, FoodlyTheme {} wrapper is fine. Assuming it's part of themed app.
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Le tue Statistiche") },
+                colors = TopAppBarDefaults.topAppBarColors( // M3 defaults, good
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
                 )
-            },
-            modifier = modifier.fillMaxSize()
-        ) { paddingValues ->
-            Column(
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .padding(16.dp)
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(24.dp)
-            ) {
-                KcalConsumptionCard(weeklyKcalData)
-                HealthyScoreCard(healthyScore)
-            }
+            )
+        },
+        modifier = modifier.fillMaxSize(),
+        containerColor = MaterialTheme.colorScheme.background // Set screen background
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .padding(paddingValues)
+                .padding(16.dp) // Outer padding for the content
+                .fillMaxSize() // Fill size for the column
+                .background(MaterialTheme.colorScheme.background), // Explicit background
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp) // Adjusted spacing
+        ) {
+            KcalConsumptionCard(weeklyKcalData)
+            HealthyScoreCard(healthyScore)
         }
     }
 }
@@ -68,14 +70,14 @@ fun StatisticsScreen(
 fun KcalConsumptionCard(kcalData: Map<String, Float>) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp), // Reduced elevation
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface) // Use surface
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
                 text = "Consumo Kcal Settimanale",
                 style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = MaterialTheme.colorScheme.onSurface, // Text on surface
                 modifier = Modifier.padding(bottom = 16.dp)
             )
 
@@ -83,7 +85,7 @@ fun KcalConsumptionCard(kcalData: Map<String, Float>) {
                 Text(
                     "No kcal data available.",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant // Muted text for empty state
                 )
             } else {
                 val modelProducer = ChartEntryModelProducer(
@@ -92,27 +94,37 @@ fun KcalConsumptionCard(kcalData: Map<String, Float>) {
                     }
                 )
                 val days = kcalData.keys.toList()
-                val formatter = AxisValueFormatter<AxisPosition.Horizontal.Bottom> { value, _ ->
-                    days.getOrNull(value.toInt()) ?: ""
-                }
+                val axisLabelColor = MaterialTheme.colorScheme.onSurfaceVariant // Color for axis labels/titles
 
                 Chart(
                     chart = columnChart(
                         columns = listOf(
-
+                            // Define column colors using theme
+                            com.patrykandpatryk.vico.core.component.shape.LineComponent(
+                                color = MaterialTheme.colorScheme.primary.hashCode(), // Vico uses Int color
+                                thicknessDp = 8f, // Example thickness
+                                shape = Shapes.roundedCornerShape(allPercent = 40)
+                            )
                         ),
                         spacing = 8.dp
                     ),
                     chartModelProducer = modelProducer,
                     startAxis = rememberStartAxis(
+                        titleComponent = textComponent(
+                            color = axisLabelColor,
+                            padding = dimensionsOf(end = 8.dp) // Spacing for title
+                        ),
+                        label = textComponent(color = axisLabelColor),
                         title = "Kcal"
                     ),
                     bottomAxis = rememberBottomAxis(
-                        valueFormatter = formatter,
+                        valueFormatter = { value, _ -> days.getOrNull(value.toInt()) ?: "" },
                         titleComponent = textComponent(
-                            color = MaterialTheme.colorScheme.onBackground,
+                            color = axisLabelColor,
                             padding = dimensionsOf(top = 4.dp)
                         ),
+                        label = textComponent(color = axisLabelColor),
+                        guideline = null, // Optionally remove guideline if too busy
                         title = "Giorno"
                     ),
                     modifier = Modifier
@@ -128,14 +140,14 @@ fun KcalConsumptionCard(kcalData: Map<String, Float>) {
 fun HealthyScoreCard(score: Float) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp), // Reduced elevation
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface) // Use surface
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
                 text = "Punteggio Salute",
                 style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = MaterialTheme.colorScheme.onSurface, // Text on surface
                 modifier = Modifier.padding(bottom = 12.dp)
             )
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -144,21 +156,21 @@ fun HealthyScoreCard(score: Float) {
                     modifier = Modifier
                         .weight(1f)
                         .height(12.dp),
-                    color = getThemedScoreColor(score),
-                    trackColor = MaterialTheme.colorScheme.surfaceTint
+                    color = getThemedScoreColor(score), // Uses theme colors, good
+                    trackColor = MaterialTheme.colorScheme.surfaceVariant // More appropriate track color
                 )
                 Text(
                     text = "${score.toInt()}/100",
                     style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(start = 12.dp)
+                    color = MaterialTheme.colorScheme.onSurface, // Text on surface
+                    modifier = Modifier.padding(start = 16.dp) // Increased padding
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 "Il tuo punteggio salute settimanale.",
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant // Muted helper text
             )
         }
     }

@@ -41,30 +41,38 @@ fun SettingsScreen(
         topBar = {
             TopAppBar(
                 title = { Text("Impostazioni Profilo") },
-                colors = TopAppBarDefaults.topAppBarColors(
+                colors = TopAppBarDefaults.topAppBarColors( // These are M3 defaults, looks good
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             )
         },
-        modifier = modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize(),
+        containerColor = MaterialTheme.colorScheme.background // Set screen background
     ) { paddingValues ->
         Column(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background) // Explicitly set background for Column too
         ) {
             // User Information Section
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
-                elevation = CardDefaults.cardElevation(4.dp)
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp), // Reduced elevation
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface) // Use surface
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Informazioni Utente", style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(bottom = 16.dp))
+                    Text(
+                        "Informazioni Utente",
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.padding(bottom = 16.dp),
+                        color = MaterialTheme.colorScheme.onSurface // Ensure text color
+                    )
                     InfoRow(icon = Icons.Filled.Person, label = "Nome", value = userName)
-                    Divider(modifier = Modifier.padding(vertical = 8.dp))
+                    Divider(modifier = Modifier.padding(vertical = 8.dp)) // Default color is outline
                     InfoRow(icon = Icons.Filled.Email, label = "Email", value = userEmail)
                     Divider(modifier = Modifier.padding(vertical = 8.dp))
                     InfoRow(icon = Icons.Filled.Phone, label = "Telefono", value = userPhoneNumber)
@@ -78,7 +86,8 @@ fun SettingsScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
-                elevation = CardDefaults.cardElevation(4.dp)
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp), // Reduced elevation
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface) // Use surface
             ) {
                 Column {
                     SettingItemRow(
@@ -86,7 +95,7 @@ fun SettingsScreen(
                         title = "Notifiche",
                         onClick = { /* Toggle notifications - viewModel call */ },
                         trailingContent = {
-                            Switch(
+                            Switch( // Switch colors will be themed by M3
                                 checked = notificationsEnabled,
                                 onCheckedChange = { viewModel.setNotificationsEnabled(it) }
                             )
@@ -98,7 +107,7 @@ fun SettingsScreen(
                         onClick = { Toast.makeText(context, "Change Password Clicked", Toast.LENGTH_SHORT).show() }
                     )
                     SettingItemRow(
-                        icon = Icons.Filled.Settings,
+                        icon = Icons.Filled.Settings, // Consider a different icon for "Terms" e.g. Article
                         title = "Termini di Servizio",
                         onClick = { Toast.makeText(context, "Terms of Service Clicked", Toast.LENGTH_SHORT).show() }
                     )
@@ -111,11 +120,11 @@ fun SettingsScreen(
                 onClick = onLogout,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+                    .padding(all = 16.dp), // Consistent padding
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error) // Correct for logout
             ) {
                 Icon(Icons.Filled.ExitToApp, contentDescription = "Logout Icon", modifier = Modifier.padding(end = 8.dp))
-                Text("Logout")
+                Text("Logout") // Text color will be onError by default
             }
         }
     }
@@ -124,11 +133,25 @@ fun SettingsScreen(
 @Composable
 fun InfoRow(icon: androidx.compose.ui.graphics.vector.ImageVector, label: String, value: String) {
     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(vertical = 8.dp)) {
-        Icon(icon, contentDescription = label, modifier = Modifier.size(24.dp), tint = MaterialTheme.colorScheme.primary)
+        Icon(
+            icon,
+            contentDescription = label,
+            modifier = Modifier.size(24.dp),
+            tint = MaterialTheme.colorScheme.secondary // Changed tint to secondary for less emphasis
+        )
         Spacer(modifier = Modifier.width(16.dp))
         Column {
-            Text(label, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Text(value, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.SemiBold)
+            Text(
+                label,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant // Good
+            )
+            Text(
+                value,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface // Ensure text color
+            )
         }
     }
 }
@@ -147,16 +170,31 @@ fun SettingItemRow(
             .padding(horizontal = 16.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(icon, contentDescription = title, modifier = Modifier.size(24.dp), tint = MaterialTheme.colorScheme.primary)
+        Icon(
+            icon,
+            contentDescription = title,
+            modifier = Modifier.size(24.dp),
+            tint = MaterialTheme.colorScheme.secondary // Changed tint to secondary
+        )
         Spacer(modifier = Modifier.width(16.dp))
-        Text(title, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f))
+        Text(
+            title,
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.weight(1f),
+            color = MaterialTheme.colorScheme.onSurface // Ensure text color
+        )
         if (trailingContent != null) {
             trailingContent()
         } else {
-            Icon(Icons.Filled.KeyboardArrowRight, contentDescription = "Go to $title")
+            Icon(
+                Icons.Filled.KeyboardArrowRight,
+                contentDescription = "Go to $title",
+                tint = MaterialTheme.colorScheme.onSurfaceVariant // Theme tint for less emphasis
+            )
         }
     }
-    Divider(modifier = Modifier.padding(start = 56.dp)) // Indent divider
+    // Optional: Keep divider if it visually separates items well, or remove if Card separation is enough
+    Divider(modifier = Modifier.padding(start = 56.dp)) // Indent divider, color will be outline
 }
 
 

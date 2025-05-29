@@ -27,11 +27,25 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 // Import new placeholder screens
 import com.example.foodly.pantry.PantryScreen
+import com.example.foodly.recipes.RecipeDetailScreen
 import com.example.foodly.recipes.RecipesScreen
 import com.example.foodly.settings.SettingsScreen
 import com.example.foodly.statistics.StatisticsScreen
+
+// Define navigation routes specifically for screens reachable from HomeScreen's BottomNavigation
+object HomeNavRoutes {
+    const val RICETTE = "home_ricette"
+    const val STATISTICHE = "home_statistiche"
+    const val DISPENSA = "home_dispensa"
+    const val IMPOSTAZIONI = "home_impostazioni"
+    const val RECIPE_DETAIL = "home_recipe_detail/{recipeId}"
+
+    fun createRecipeDetailRoute(recipeId: Int) = "home_recipe_detail/$recipeId"
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,38 +55,66 @@ fun HomeScreen(onLogout: () -> Unit) { // Added onLogout callback
     Scaffold(
         bottomBar = { BottomNavigation(navController) }
     ) { paddingValues ->
-        NavHost(
-            navController = navController,
-            startDestination = NavigationItem.Ricette.route,
-            modifier = Modifier.padding(paddingValues)
+        // Ensure the content area uses the theme's background color
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
+            color = MaterialTheme.colorScheme.background
         ) {
-            composable(NavigationItem.Ricette.route) {
-                // Actual RecipesScreen from the recipes package
-                com.example.foodly.recipes.RecipesScreen()
-            }
-            composable(NavigationItem.Statistiche.route) {
-                // New placeholder StatisticsScreen
-                com.example.foodly.statistics.StatisticsScreen()
-            }
-            composable(NavigationItem.Impostazioni.route) {
-                // New placeholder SettingsScreen, pass the onLogout callback
-                com.example.foodly.settings.SettingsScreen(onLogout = onLogout)
-            }
-            composable(NavigationItem.Dispensa.route) {
-                // New placeholder PantryScreen
-                com.example.foodly.pantry.PantryScreen()
+            NavHost(
+                navController = navController,
+                startDestination = HomeNavRoutes.RICETTE // Use new route object
+                // modifier = Modifier.padding(paddingValues) // Padding is now on the Surface
+            ) {
+                composable(HomeNavRoutes.RICETTE) {
+                    // Pass the NavController to RecipesScreen
+                    com.example.foodly.recipes.RecipesScreen(navController = navController)
+                }
+                composable(HomeNavRoutes.STATISTICHE) {
+                    // New placeholder StatisticsScreen
+                    com.example.foodly.statistics.StatisticsScreen()
+                }
+                composable(HomeNavRoutes.IMPOSTAZIONI) {
+                    // New placeholder SettingsScreen, pass the onLogout callback
+                    com.example.foodly.settings.SettingsScreen(onLogout = onLogout)
+                }
+                composable(HomeNavRoutes.DISPENSA) {
+                    // New placeholder PantryScreen
+                    com.example.foodly.pantry.PantryScreen()
+                }
+                composable(
+                    route = HomeNavRoutes.RECIPE_DETAIL,
+                    arguments = listOf(navArgument("recipeId") { type = NavType.IntType })
+                ) { backStackEntry ->
+                    val recipeId = backStackEntry.arguments?.getInt("recipeId")
+                    requireNotNull(recipeId) { "Recipe ID not found in arguments" }
+                    RecipeDetailScreen(
+                        recipeId = recipeId,
+                        onNavigateBack = { navController.navigateUp() }
+                        // ViewModel will be accessed via viewModel() in RecipeDetailScreen itself
+                    )
+                }
             }
         }
     }
 }
 
+// Internal Navigation items for BottomNavigation
+private sealed class BottomNavItem(val route: String, val icon: ImageVector, val title: String) {
+    object Ricette : BottomNavItem(HomeNavRoutes.RICETTE, Icons.Outlined.Menu, "Ricette")
+    object Statistiche : BottomNavItem(HomeNavRoutes.STATISTICHE, Icons.Outlined.Info, "Statistica")
+    object Dispensa : BottomNavItem(HomeNavRoutes.DISPENSA, Icons.Filled.ShoppingCart, "Dispensa")
+    object Impostazioni : BottomNavItem(HomeNavRoutes.IMPOSTAZIONI, Icons.Filled.Settings, "Impostazioni")
+}
+
 @Composable
 fun BottomNavigation(navController: NavController) {
     val items = listOf(
-        NavigationItem.Ricette,
-        NavigationItem.Statistiche,
-        NavigationItem.Dispensa,
-        NavigationItem.Impostazioni
+        BottomNavItem.Ricette,
+        BottomNavItem.Statistiche,
+        BottomNavItem.Dispensa,
+        BottomNavItem.Impostazioni
     )
 
     NavigationBar {
@@ -86,12 +128,18 @@ fun BottomNavigation(navController: NavController) {
                 selected = currentRoute == item.route,
                 onClick = {
                     navController.navigate(item.route) {
+                        // Pop up to the start destination of the graph to
+                        // avoid building up a large stack of destinations
+                        // on the back stack as users select items
                         navController.graph.startDestinationRoute?.let { route ->
                             popUpTo(route) {
                                 saveState = true
                             }
                         }
+                        // Avoid multiple copies of the same destination when
+                        // reselecting the same item
                         launchSingleTop = true
+                        // Restore state when reselecting a previously selected item
                         restoreState = true
                     }
                 }
@@ -100,13 +148,6 @@ fun BottomNavigation(navController: NavController) {
     }
 }
 
-// Definizione degli elementi di navigazione
-sealed class NavigationItem(val route: String, val icon: ImageVector, val title: String) {
-    object Ricette : NavigationItem("ricette", Icons.Outlined.Menu, "Ricette")
-    object Statistiche : NavigationItem("statistiche", Icons.Outlined.Info, "Statistica") // Changed label
-    object Dispensa : NavigationItem("dispensa", Icons.Filled.ShoppingCart, "Dispensa")
-    object Impostazioni : NavigationItem("impostazioni", Icons.Filled.Settings, "Impostazioni") // Changed label
-}
 
 @Preview(showBackground = true)
 @Composable
