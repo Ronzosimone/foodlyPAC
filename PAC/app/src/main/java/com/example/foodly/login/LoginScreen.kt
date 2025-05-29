@@ -36,7 +36,7 @@ fun LoginScreen(
     val loginUiState by viewModel.uiState.collectAsState()
 
     var email by rememberSaveable { mutableStateOf("") }
-    var password by rememberSaveable { mutableState of("") }
+    var password by rememberSaveable { mutableStateOf("") }
 
     // Gradient di sfondo (dal verde chiaro al bianco)
     val backgroundBrush = Brush.verticalGradient(

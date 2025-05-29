@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -14,6 +15,7 @@ import com.example.foodly.home.HomeScreen
 import com.example.foodly.login.LoginScreen
 import com.example.foodly.login.RegistrationScreen
 import com.example.foodly.ui.theme.FoodlyTheme
+import io.ktor.websocket.Frame
 
 object AppRoutes {
     const val LOGIN = "login"
@@ -81,6 +83,6 @@ fun DefaultPreview() {
     FoodlyTheme {
         // FoodlyApp() // This might be problematic for previews with complex NavHost.
                        // Consider previewing individual screens or a simplified NavHost.
-        Text("App Preview (See individual screen previews for details)")
+        Frame.Text("App Preview (See individual screen previews for details)")
     }
 }

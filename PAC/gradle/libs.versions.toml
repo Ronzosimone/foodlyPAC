@@ -6,6 +6,9 @@ activityCompose = "1.8.2"  # Invece di 1.10.1
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
+ktorClientAndroid = "2.3.4"
+ktorClientContentNegotiation = "2.3.4"
+ktorClientLogging = "2.3.4"
 lifecycleRuntimeKtx = "2.7.0"  # Versione compatibile con compileSdk 34
 
 composeBom = "2024.04.01"
@@ -31,6 +34,9 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 
 # Ktor
+ktor-client-android-v234 = { module = "io.ktor:ktor-client-android", version.ref = "ktorClientAndroid" }
+ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktorClientLogging" }
+ktor-ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktorClientContentNegotiation" }
 ktor-server-core = { group = "io.ktor", name = "ktor-server-core-jvm", version.ref = "ktor" }
 ktor-server-netty = { group = "io.ktor", name = "ktor-server-netty-jvm", version.ref = "ktor" }
 ktor-server-content-negotiation = { group = "io.ktor", name = "ktor-server-content-negotiation-jvm", version.ref = "ktor" }

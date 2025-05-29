@@ -11,7 +11,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
-import androidx.compose.material.icons.filled.Policy
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -98,7 +98,7 @@ fun SettingsScreen(
                         onClick = { Toast.makeText(context, "Change Password Clicked", Toast.LENGTH_SHORT).show() }
                     )
                     SettingItemRow(
-                        icon = Icons.Filled.Policy,
+                        icon = Icons.Filled.Settings,
                         title = "Termini di Servizio",
                         onClick = { Toast.makeText(context, "Terms of Service Clicked", Toast.LENGTH_SHORT).show() }
                     )
