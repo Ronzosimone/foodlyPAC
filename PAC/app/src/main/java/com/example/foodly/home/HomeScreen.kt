@@ -13,9 +13,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -55,6 +57,7 @@ fun HomeScreen(onLogout: () -> Unit) { // Added onLogout callback
     val navController = rememberNavController()
 
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.background, // Apply background to Scaffold
         bottomBar = { BottomNavigation(navController) }
     ) { paddingValues ->
         // Ensure the content area uses the theme's background color
@@ -119,7 +122,9 @@ fun BottomNavigation(navController: NavController) {
         BottomNavItem.Impostazioni
     )
 
-    NavigationBar {
+    NavigationBar(
+        containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp) // Apply surfaceColorAtElevation
+    ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
 
@@ -128,6 +133,13 @@ fun BottomNavigation(navController: NavController) {
                 icon = { Icon(item.icon, contentDescription = item.title) },
                 label = { Text(text = item.title) },
                 selected = currentRoute == item.route,
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = MaterialTheme.colorScheme.onSurface,
+                    selectedTextColor = MaterialTheme.colorScheme.onSurface,
+                    indicatorColor = MaterialTheme.colorScheme.secondaryContainer,
+                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
+                ),
                 onClick = {
                     navController.navigate(item.route) {
                         // Pop up to the start destination of the graph to
@@ -154,5 +166,7 @@ fun BottomNavigation(navController: NavController) {
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {
-    HomeScreen(onLogout = {}) // Provide dummy callback for preview
+    com.example.foodly.ui.theme.FoodlyTheme { // Apply FoodlyTheme to Preview
+        HomeScreen(onLogout = {}) // Provide dummy callback for preview
+    }
 }

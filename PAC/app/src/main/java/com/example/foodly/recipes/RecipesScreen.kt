@@ -30,14 +30,17 @@ fun RecipesScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    Surface(modifier = modifier.fillMaxSize()) {
+    Surface(
+        modifier = modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background // Ensure main background color
+    ) {
         when (val state = uiState) {
             is RecipesUiState.Loading -> {
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    CircularProgressIndicator()
+                    CircularProgressIndicator() // Default color is fine, usually primary
                 }
             }
             is RecipesUiState.Success -> {
@@ -104,10 +107,10 @@ fun RecipesScreen(
 fun RecipeItem(recipe: Recipe, modifier: Modifier = Modifier) {
     Card(
         modifier = modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp), // Increased elevation
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface), // Use surface color
         onClick = {
-
+            // TODO: Handle click, e.g., navigate to recipe detail
         }
     ) {
         Column {
@@ -117,24 +120,25 @@ fun RecipeItem(recipe: Recipe, modifier: Modifier = Modifier) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(180.dp)
+                    .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)) // Clip top corners
             )
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
                     text = recipe.title,
                     style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = MaterialTheme.colorScheme.onSurface, // Use onSurface
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
                 Text(
                     text = "Likes: ${recipe.likes}",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = MaterialTheme.colorScheme.onSurface, // Use onSurface
                     modifier = Modifier.padding(bottom = 4.dp)
                 )
                 Text(
                     text = "Missed Ingredients: ${recipe.missedIngredientCount}",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurface // Use onSurface
                 )
             }
         }
@@ -173,7 +177,7 @@ fun RecipeImage(
                         .background(MaterialTheme.colorScheme.surfaceVariant),
                     contentAlignment = Alignment.Center
                 ) {
-                    CircularProgressIndicator()
+                    CircularProgressIndicator(color = MaterialTheme.colorScheme.onSurfaceVariant) // Use onSurfaceVariant
                 }
             }
             is AsyncImagePainter.State.Error -> {

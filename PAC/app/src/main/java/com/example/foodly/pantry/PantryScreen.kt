@@ -54,7 +54,7 @@ fun PantryScreen(
             Surface( // Add a surface for elevation and theming if desired for bottom bar area
                 modifier = Modifier.fillMaxWidth(),
                 shadowElevation = 8.dp, // Example elevation for bottom bar area
-                color = MaterialTheme.colorScheme.surface // M3 bottom app bars often use surface
+        color = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp) // Use surfaceColorAtElevation
             ) {
                 Button(
                     onClick = {
@@ -157,7 +157,7 @@ fun PantryListItem(
                 Icon(
                     Icons.Filled.Delete,
                     contentDescription = "Remove item",
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant // Explicit tint if needed
+                    tint = MaterialTheme.colorScheme.error // Use error color for delete icon
                 )
             }
         }
@@ -280,7 +280,7 @@ fun AddEditPantryItemDialog(
 @Preview(showBackground = true)
 @Composable
 fun PantryScreenPreview() {
-    MaterialTheme {
+    com.example.foodly.ui.theme.FoodlyTheme {
         PantryScreen()
     }
 }
@@ -288,7 +288,7 @@ fun PantryScreenPreview() {
 @Preview(showBackground = true)
 @Composable
 fun PantryListItemPreview() {
-    MaterialTheme {
+    com.example.foodly.ui.theme.FoodlyTheme {
         PantryListItem(
             item = UserPantryItem(PredefinedIngredients.items.first(), 100.0, "g"),
             onRemove = {},

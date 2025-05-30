@@ -139,7 +139,7 @@ fun RegistrationScreen(
 @Preview(showBackground = true)
 @Composable
 fun RegistrationScreenPreview() {
-    MaterialTheme {
+    FoodlyTheme {
         RegistrationScreen(onRegistrationSuccess = {})
     }
 }
