@@ -4,14 +4,12 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,10 +40,9 @@ fun RegistrationScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Card(
+        ElevatedCard(
             shape = CircleShape,
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp), // Consistent elevation
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface), // Use surface for card
+            colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface),
             modifier = Modifier
                 .size(120.dp) // Smaller logo for registration
                 .clip(CircleShape) // clip is redundant
@@ -101,8 +98,8 @@ fun RegistrationScreen(
         )
         Spacer(Modifier.height(24.dp)) // Adjusted spacing
 
-        // Register Button
-        Button(
+        // Elevated register button
+        ElevatedButton(
             onClick = { viewModel.register(email, password, confirmPassword) },
             enabled = registrationUiState != RegistrationUiState.Loading,
             modifier = Modifier.fillMaxWidth()

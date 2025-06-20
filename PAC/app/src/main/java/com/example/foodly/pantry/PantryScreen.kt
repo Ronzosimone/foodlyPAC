@@ -19,7 +19,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -56,14 +55,14 @@ fun PantryScreen(
                 shadowElevation = 8.dp, // Example elevation for bottom bar area
         color = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp) // Use surfaceColorAtElevation
             ) {
-                Button(
+                FilledTonalButton(
                     onClick = {
                         Toast.makeText(context, "Recipe recommendation coming soon!", Toast.LENGTH_SHORT).show()
                     },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp), // Keep padding for the button itself
-                    // Uses default M3 Button styling (primary container)
+                    // Uses tonal styling for a softer look
                 ) {
                     Text("Consigliami una ricetta")
                 }
@@ -127,12 +126,11 @@ fun PantryListItem(
     onRemove: () -> Unit,
     onEdit: () -> Unit
 ) {
-    Card(
+    ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onEdit() },
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp), // Keep low elevation
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface) // Use surface color
+        colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Row(
             modifier = Modifier
@@ -248,7 +246,7 @@ fun AddEditPantryItemDialog(
             }
         },
         confirmButton = {
-            Button(
+            ElevatedButton(
                 onClick = {
                     val quantity = quantityStr.toDoubleOrNull()
                     if (quantity == null || quantity <= 0) {
@@ -261,7 +259,7 @@ fun AddEditPantryItemDialog(
                     }
                     onConfirm(selectedIngredient, quantity, unit)
                 }
-                // Default M3 Button styling
+                // Elevated button stands out
             ) {
                 Text("Confirm")
             }

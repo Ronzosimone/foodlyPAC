@@ -107,10 +107,9 @@ fun RecipesScreen(
 
 @Composable
 fun RecipeItem(recipe: Recipe, modifier: Modifier = Modifier) {
-    Card(
+    ElevatedCard(
         modifier = modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp), // Increased elevation
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface), // Use surface color
+        colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface),
         onClick = {
             // TODO: Handle click, e.g., navigate to recipe detail
         }

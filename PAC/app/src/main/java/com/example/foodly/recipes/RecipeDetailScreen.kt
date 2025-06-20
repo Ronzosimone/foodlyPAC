@@ -109,7 +109,7 @@ fun RecipeDetailScreen(
             // Recipe found, display details
             Scaffold(
                 topBar = {
-                    TopAppBar(
+                    CenterAlignedTopAppBar(
                         title = { Text(recipe.title, maxLines = 2, style = MaterialTheme.typography.titleLarge) }, // Allow 2 lines for title
                         navigationIcon = {
                             IconButton(onClick = onNavigateBack) {
@@ -119,7 +119,7 @@ fun RecipeDetailScreen(
                                 )
                             }
                         },
-                        colors = TopAppBarDefaults.topAppBarColors(
+                        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                             containerColor = MaterialTheme.colorScheme.primaryContainer,
                             titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                             navigationIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer
@@ -230,10 +230,9 @@ fun IngredientSection(
             color = contentColor,
             modifier = Modifier.padding(bottom = 8.dp)
         )
-        Card(
+        ElevatedCard(
             modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = cardColor),
-            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            colors = CardDefaults.elevatedCardColors(containerColor = cardColor)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 ingredients.forEachIndexed { index, ingredient ->
