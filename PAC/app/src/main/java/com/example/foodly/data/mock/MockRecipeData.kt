@@ -9,7 +9,7 @@ object MockRecipeData {
             id = 715415,
             image = "https://img.spoonacular.com/recipes/715415-312x231.jpg",
             imageType = "jpg",
-            likes = 0,
+            likes = 10,
             missedIngredientCount = 11,
             missedIngredients = listOf(
                 Ingredient(

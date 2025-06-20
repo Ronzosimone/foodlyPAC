@@ -24,6 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.foodly.R
+import com.example.foodly.ui.theme.FoodlyTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

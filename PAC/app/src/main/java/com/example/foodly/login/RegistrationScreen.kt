@@ -18,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.foodly.R // Assuming R.drawable.logo exists
+import com.example.foodly.ui.theme.FoodlyTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
