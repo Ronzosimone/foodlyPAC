@@ -111,7 +111,7 @@ private sealed class BottomNavItem(val route: String, val icon: ImageVector, val
     object Ricette : BottomNavItem(HomeNavRoutes.RICETTE, Icons.Outlined.Menu, "Ricette")
     object Statistiche : BottomNavItem(HomeNavRoutes.STATISTICHE, Icons.Outlined.Info, "Statistica")
     object Dispensa : BottomNavItem(HomeNavRoutes.DISPENSA, Icons.Filled.ShoppingCart, "Dispensa")
-    object Impostazioni : BottomNavItem(HomeNavRoutes.IMPOSTAZIONI, Icons.Filled.Settings, "Impostazioni")
+    object Impostazioni : BottomNavItem(HomeNavRoutes.IMPOSTAZIONI, Icons.Filled.Settings, "Opzioni")
 }
 
 @Composable
