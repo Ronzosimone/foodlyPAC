@@ -73,8 +73,8 @@ private val LightColorScheme = lightColorScheme(
 @Composable
 fun FoodlyTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is disabled for this overhaul to ensure custom theme is applied.
-    dynamicColor: Boolean = false,
+    // Use dynamic colors on Android 12+ for a modern look when available.
+    dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
