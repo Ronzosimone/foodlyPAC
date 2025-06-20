@@ -24,6 +24,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Brush
 import com.example.foodly.backend.Ingredient
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -60,12 +61,21 @@ fun RecipeDetailScreen(
     onNavigateBack: () -> Unit
 ) {
     val uiState by recipesViewModel.uiState.collectAsState()
+    val gradient = Brush.verticalGradient(
+        colors = listOf(
+            MaterialTheme.colorScheme.primaryContainer,
+            MaterialTheme.colorScheme.secondaryContainer
+        )
+    )
 
     when (val state = uiState) {
         is RecipesUiState.Loading -> {
-            Scaffold(containerColor = MaterialTheme.colorScheme.background) { paddingValues ->
+            Scaffold(containerColor = Color.Transparent) { paddingValues ->
                 Box(
-                    modifier = Modifier.fillMaxSize().padding(paddingValues),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(gradient)
+                        .padding(paddingValues),
                     contentAlignment = Alignment.Center
                 ) {
                     CircularProgressIndicator()
@@ -73,9 +83,13 @@ fun RecipeDetailScreen(
             }
         }
         is RecipesUiState.Error -> {
-            Scaffold(containerColor = MaterialTheme.colorScheme.background) { paddingValues ->
+            Scaffold(containerColor = Color.Transparent) { paddingValues ->
                 Box(
-                    modifier = Modifier.fillMaxSize().padding(paddingValues).padding(16.dp),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(gradient)
+                        .padding(paddingValues)
+                        .padding(16.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
@@ -91,9 +105,13 @@ fun RecipeDetailScreen(
             val recipe = state.recipes.find { it.id == recipeId }
 
             if (recipe == null) {
-                Scaffold(containerColor = MaterialTheme.colorScheme.background) { paddingValues ->
+                Scaffold(containerColor = Color.Transparent) { paddingValues ->
                     Box(
-                        modifier = Modifier.fillMaxSize().padding(paddingValues).padding(16.dp),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(gradient)
+                            .padding(paddingValues)
+                            .padding(16.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
@@ -126,11 +144,12 @@ fun RecipeDetailScreen(
                         )
                     )
                 },
-                containerColor = MaterialTheme.colorScheme.background
+                containerColor = Color.Transparent
             ) { paddingValues ->
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
+                        .background(gradient)
                         .padding(paddingValues)
                 ) {
                     // Image
@@ -203,13 +222,16 @@ fun RecipeDetailScreen(
             }
         }
         is RecipesUiState.Idle -> { // Handle Idle state, perhaps show loading or nothing
-            Scaffold(containerColor = MaterialTheme.colorScheme.background) { paddingValues ->
+            Scaffold(containerColor = Color.Transparent) { paddingValues ->
                 Box(
-                    modifier = Modifier.fillMaxSize().padding(paddingValues),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(gradient)
+                        .padding(paddingValues),
                     contentAlignment = Alignment.Center
                 ) {
                     // Could also be an empty Box or a specific message for Idle
-                    CircularProgressIndicator() 
+                    CircularProgressIndicator()
                 }
             }
         }

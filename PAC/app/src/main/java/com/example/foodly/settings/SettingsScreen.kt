@@ -24,6 +24,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,6 +39,12 @@ fun SettingsScreen(
     val userPhoneNumber by viewModel.userPhoneNumber.collectAsState()
     val notificationsEnabled by viewModel.notificationsEnabled.collectAsState()
     val context = LocalContext.current
+    val gradient = Brush.verticalGradient(
+        colors = listOf(
+            MaterialTheme.colorScheme.primaryContainer,
+            MaterialTheme.colorScheme.secondaryContainer
+        )
+    )
 
     Scaffold(
         topBar = {
@@ -49,13 +57,13 @@ fun SettingsScreen(
             )
         },
         modifier = modifier.fillMaxSize(),
-        containerColor = MaterialTheme.colorScheme.background // Set screen background
+        containerColor = Color.Transparent
     ) { paddingValues ->
         Column(
             modifier = Modifier
                 .padding(paddingValues)
+                .background(gradient)
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background) // Explicitly set background for Column too
         ) {
             // User Information Section
             Card(

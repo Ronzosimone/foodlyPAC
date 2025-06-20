@@ -22,6 +22,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -57,16 +59,23 @@ object HomeNavRoutes {
 fun HomeScreen(onLogout: () -> Unit) { // Added onLogout callback
     val navController = rememberNavController()
 
+    val gradient = Brush.verticalGradient(
+        colors = listOf(
+            MaterialTheme.colorScheme.primaryContainer,
+            MaterialTheme.colorScheme.secondaryContainer
+        )
+    )
+
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.background, // Apply background to Scaffold
+        containerColor = Color.Transparent,
         bottomBar = { BottomNavigation(navController) }
     ) { paddingValues ->
-        // Ensure the content area uses the theme's background color
         Surface(
             modifier = Modifier
                 .fillMaxSize()
+                .background(gradient)
                 .padding(paddingValues),
-            color = MaterialTheme.colorScheme.background
+            color = Color.Transparent
         ) {
             NavHost(
                 navController = navController,

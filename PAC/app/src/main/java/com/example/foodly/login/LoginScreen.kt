@@ -40,13 +40,19 @@ fun LoginScreen(
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     val context = LocalContext.current
+    val gradient = Brush.verticalGradient(
+        colors = listOf(
+            MaterialTheme.colorScheme.primaryContainer,
+            MaterialTheme.colorScheme.secondaryContainer
+        )
+    )
 
-    // Use solid background color for a cleaner M3 look
+    // Use a subtle gradient background for a modern look
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background) // Solid background
-            .padding(24.dp), // Keep padding
+            .background(gradient)
+            .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {

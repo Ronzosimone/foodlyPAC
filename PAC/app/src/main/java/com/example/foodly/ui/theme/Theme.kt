@@ -88,9 +88,8 @@ fun FoodlyTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography, // Typography will be updated next
+        typography = Typography,
+        shapes = FoodlyShapes,
         content = content
-        // Consider adding shapes here if you want to customize them globally
-        // shapes = Shapes(small = ..., medium = ..., large = ...)
     )
 }

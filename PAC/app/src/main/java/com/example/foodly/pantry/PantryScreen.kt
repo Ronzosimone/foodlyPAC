@@ -21,6 +21,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,9 +36,16 @@ fun PantryScreen(
     var editingItem by remember { mutableStateOf<UserPantryItem?>(null) }
     val context = LocalContext.current
 
+    val gradient = Brush.verticalGradient(
+        colors = listOf(
+            MaterialTheme.colorScheme.primaryContainer,
+            MaterialTheme.colorScheme.secondaryContainer
+        )
+    )
+
     Scaffold(
-        modifier = modifier.fillMaxSize(),
-        containerColor = MaterialTheme.colorScheme.background, // Set screen background color
+        modifier = modifier.fillMaxSize().background(gradient),
+        containerColor = Color.Transparent,
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {

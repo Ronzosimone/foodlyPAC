@@ -9,6 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -35,6 +36,12 @@ fun StatisticsScreen(
 ) {
     val weeklyKcalData by viewModel.weeklyKcalData.collectAsState()
     val healthyScore by viewModel.healthyScoreData.collectAsState()
+    val gradient = Brush.verticalGradient(
+        colors = listOf(
+            MaterialTheme.colorScheme.primaryContainer,
+            MaterialTheme.colorScheme.secondaryContainer
+        )
+    )
 
     // FoodlyTheme is already applied at a higher level, typically in MainActivity or App composable.
     // If this screen is used independently, FoodlyTheme {} wrapper is fine. Assuming it's part of themed app.
@@ -49,16 +56,16 @@ fun StatisticsScreen(
             )
         },
         modifier = modifier.fillMaxSize(),
-        containerColor = MaterialTheme.colorScheme.background // Set screen background
+        containerColor = Color.Transparent
     ) { paddingValues ->
         Column(
             modifier = Modifier
                 .padding(paddingValues)
-                .padding(16.dp) // Outer padding for the content
-                .fillMaxSize() // Fill size for the column
-                .background(MaterialTheme.colorScheme.background), // Explicit background
+                .background(gradient)
+                .padding(16.dp)
+                .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp) // Adjusted spacing
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             KcalConsumptionCard(weeklyKcalData)
             HealthyScoreCard(healthyScore)
