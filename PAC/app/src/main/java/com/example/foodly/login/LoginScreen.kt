@@ -6,10 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.material3.CardDefaults.elevatedCardElevation
-import androidx.compose.material3.TextFieldDefaults.outlinedTextFieldColors
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.material3.CircularProgressIndicator
@@ -19,8 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -50,11 +45,10 @@ fun LoginScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        // Logo in a Card
-        Card(
+        // Logo in an elevated card
+        ElevatedCard(
             shape = CircleShape,
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp), // Consistent elevation
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface), // Use surface for card
+            colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface),
             modifier = Modifier
                 .size(150.dp)
                 .clip(CircleShape) // clip is redundant if Card shape is CircleShape, but harmless
@@ -100,8 +94,8 @@ fun LoginScreen(
 
         Spacer(Modifier.height(32.dp)) // Increased spacing
 
-        // Login Button
-        Button(
+        // Elevated login button
+        ElevatedButton(
             onClick = { viewModel.login(email, password, context) },
             enabled = loginUiState != LoginUiState.Loading,
             modifier = Modifier.fillMaxWidth(),

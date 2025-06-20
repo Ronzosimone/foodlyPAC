@@ -40,9 +40,9 @@ fun StatisticsScreen(
     // If this screen is used independently, FoodlyTheme {} wrapper is fine. Assuming it's part of themed app.
     Scaffold(
         topBar = {
-            TopAppBar(
+            CenterAlignedTopAppBar(
                 title = { Text("Le tue Statistiche") },
-                colors = TopAppBarDefaults.topAppBarColors( // M3 defaults, good
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
                 )
@@ -68,10 +68,9 @@ fun StatisticsScreen(
 
 @Composable
 fun KcalConsumptionCard(kcalData: Map<String, Float>) {
-    Card(
+    ElevatedCard(
         modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp), // Reduced elevation
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface) // Use surface
+        colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
@@ -138,10 +137,9 @@ fun KcalConsumptionCard(kcalData: Map<String, Float>) {
 
 @Composable
 fun HealthyScoreCard(score: Float) {
-    Card(
+    ElevatedCard(
         modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp), // Reduced elevation
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface) // Use surface
+        colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(

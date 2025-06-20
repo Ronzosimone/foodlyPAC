@@ -40,9 +40,9 @@ fun SettingsScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            CenterAlignedTopAppBar(
                 title = { Text("Impostazioni Profilo") },
-                colors = TopAppBarDefaults.topAppBarColors( // These are M3 defaults, looks good
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
                 )
@@ -58,12 +58,11 @@ fun SettingsScreen(
                 .background(MaterialTheme.colorScheme.background) // Explicitly set background for Column too
         ) {
             // User Information Section
-            Card(
+            ElevatedCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
-                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp), // Reduced elevation
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface) // Use surface
+                colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface)
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
@@ -83,12 +82,11 @@ fun SettingsScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             // Other Settings Options
-            Card(
+            ElevatedCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
-                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp), // Reduced elevation
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface) // Use surface
+                colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface)
             ) {
                 Column {
                     SettingItemRow(
@@ -117,7 +115,7 @@ fun SettingsScreen(
 
             Spacer(modifier = Modifier.weight(1f)) // Push logout to bottom
 
-            Button(
+            ElevatedButton(
                 onClick = onLogout,
                 modifier = Modifier
                     .fillMaxWidth()

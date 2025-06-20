@@ -10,6 +10,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color // Required for explicit Color values for error
 import androidx.compose.ui.platform.LocalContext
+import com.example.foodly.ui.theme.AppShapes
 
 private val DarkColorScheme = darkColorScheme(
     primary = PrimaryDark,
@@ -73,8 +74,8 @@ private val LightColorScheme = lightColorScheme(
 @Composable
 fun FoodlyTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is disabled for this overhaul to ensure custom theme is applied.
-    dynamicColor: Boolean = false,
+    // Use dynamic colors on Android 12+ for a modern look when available.
+    dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -89,8 +90,7 @@ fun FoodlyTheme(
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography, // Typography will be updated next
+        shapes = AppShapes, // Apply custom rounded shapes globally
         content = content
-        // Consider adding shapes here if you want to customize them globally
-        // shapes = Shapes(small = ..., medium = ..., large = ...)
     )
 }
