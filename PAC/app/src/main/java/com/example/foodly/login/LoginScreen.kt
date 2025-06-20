@@ -16,6 +16,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
@@ -38,6 +39,7 @@ fun LoginScreen(
 
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
+    val context = LocalContext.current
 
     // Use solid background color for a cleaner M3 look
     Column(
@@ -100,7 +102,7 @@ fun LoginScreen(
 
         // Login Button
         Button(
-            onClick = { viewModel.login(email, password) },
+            onClick = { viewModel.login(email, password, context) },
             enabled = loginUiState != LoginUiState.Loading,
             modifier = Modifier.fillMaxWidth(),
             // M3 buttons have standard shapes, explicit shape might not be needed unless specific design

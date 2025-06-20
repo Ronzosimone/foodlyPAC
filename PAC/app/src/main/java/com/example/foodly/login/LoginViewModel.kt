@@ -1,8 +1,11 @@
 package com.example.foodly.login
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.delay
+import com.example.foodly.api.AuthApiClient
+import com.example.foodly.api.Result
+import com.example.foodly.api.request.LoginRequest
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,15 +24,13 @@ class LoginViewModel : ViewModel() {
     private val _uiState = MutableStateFlow<LoginUiState>(LoginUiState.Idle)
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
 
-    fun login(email: String, password: String) {
+    fun login(email: String, password: String, context: Context) {
         viewModelScope.launch {
             _uiState.value = LoginUiState.Loading
-            // Simulate network delay
-            delay(1500)
-            if (email.equals("test@example.com", ignoreCase = true)) {
-                _uiState.value = LoginUiState.Success
-            } else {
-                _uiState.value = LoginUiState.Error("Invalid email or password.")
+            val result = AuthApiClient.login(LoginRequest(email, password), context)
+            when (result) {
+                is Result.Success -> _uiState.value = LoginUiState.Success
+                is Result.Error -> _uiState.value = LoginUiState.Error(result.message)
             }
         }
     }
