@@ -67,16 +67,16 @@ dependencies {
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.server.netty)
     implementation(libs.ktor.server.content.negotiation)
+    implementation(libs.logback.classic.v1211)
     implementation(libs.ktor.serialization.kotlinx.json)
-    implementation(libs.logback.classic)
     implementation(libs.ktor.client.core)
-    implementation(libs.ktor.client.cio)
     implementation(libs.ktor.client.android)
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.ktor.client.content.negotiation)
-    implementation(libs.ktor.client.logging)
-
+    implementation("io.ktor:ktor-client-core:2.x.x") {
+        exclude(group = "ch.qos.logback", module = "logback-classic")
+    }
     // Coil per immagini
     implementation("io.coil-kt:coil-compose:2.5.0")
 

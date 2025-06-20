@@ -21,7 +21,7 @@ object AuthApiClient : BaseApiClient(NetworkSingleton.httpClient) {
         context: Context,
         sendFirebaseToken: Boolean = true
     ): com.example.foodly.api.Result<LoginResponse> { //Login or Login OTP
-        val result = postRequest<LoginRequest, LoginResponse>("/Login/", request)
+        val result = postRequest<LoginRequest, LoginResponse>("Login", request)
         when (result) {
             is com.example.foodly.api.Result.Success -> {
                 // save user token
