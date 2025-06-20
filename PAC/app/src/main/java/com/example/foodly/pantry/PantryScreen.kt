@@ -251,11 +251,11 @@ fun AddEditPantryItemDialog(
                     val quantity = quantityStr.toDoubleOrNull()
                     if (quantity == null || quantity <= 0) {
                         Toast.makeText(context, "Please enter a valid quantity.", Toast.LENGTH_SHORT).show()
-                        return@Button
+                        return@ElevatedButton
                     }
                     if (unit.isBlank()) {
                         Toast.makeText(context, "Please enter a unit.", Toast.LENGTH_SHORT).show()
-                        return@Button
+                        return@ElevatedButton
                     }
                     onConfirm(selectedIngredient, quantity, unit)
                 }
