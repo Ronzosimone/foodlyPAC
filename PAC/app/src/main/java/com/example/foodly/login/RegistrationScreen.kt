@@ -10,6 +10,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,7 +27,10 @@ fun RegistrationScreen(
     viewModel: RegistrationViewModel = viewModel()
 ) {
     val registrationUiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
 
+    var name by rememberSaveable { mutableStateOf("") }
+    var surname by rememberSaveable { mutableStateOf("") }
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var confirmPassword by rememberSaveable { mutableStateOf("") }
@@ -59,6 +63,26 @@ fun RegistrationScreen(
             text = "Create your Foodly Account",
             style = MaterialTheme.typography.headlineSmall, // Adjusted style
             color = MaterialTheme.colorScheme.primary // Keep primary color for title
+        )
+        Spacer(Modifier.height(16.dp))
+
+        // Name Field
+        OutlinedTextField(
+            value = name,
+            onValueChange = { name = it },
+            label = { Text("Name") },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(Modifier.height(16.dp))
+
+        // Surname Field
+        OutlinedTextField(
+            value = surname,
+            onValueChange = { surname = it },
+            label = { Text("Surname") },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth()
         )
         Spacer(Modifier.height(16.dp))
 
@@ -100,7 +124,7 @@ fun RegistrationScreen(
 
         // Elevated register button
         ElevatedButton(
-            onClick = { viewModel.register(email, password, confirmPassword) },
+            onClick = { viewModel.register(name, surname, email, password, confirmPassword, context) },
             enabled = registrationUiState != RegistrationUiState.Loading,
             modifier = Modifier.fillMaxWidth()
             // shape = RoundedCornerShape(12.dp) // Removed for M3 default

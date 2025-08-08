@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -24,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.foodly.utils.UserPreferences
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,7 +38,21 @@ fun SettingsScreen(
     val userEmail by viewModel.userEmail.collectAsState()
     val userPhoneNumber by viewModel.userPhoneNumber.collectAsState()
     val notificationsEnabled by viewModel.notificationsEnabled.collectAsState()
+    val profileState by viewModel.profileUiState.collectAsState()
     val context = LocalContext.current
+
+    // Load profile when screen is first displayed
+    LaunchedEffect(Unit) {
+        // Get real userId from SharedPreferences
+        val userId = UserPreferences.getInstance(context).getUserId()
+        if (userId != null) {
+            viewModel.loadProfile(userId, context)
+        } else {
+            // User not logged in, handle this case (maybe navigate to login)
+            // For now just log it
+            android.util.Log.w("SettingsScreen", "User ID not found in preferences")
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -69,13 +85,42 @@ fun SettingsScreen(
                         "Informazioni Utente",
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(bottom = 16.dp),
-                        color = MaterialTheme.colorScheme.onSurface // Ensure text color
+                        color = MaterialTheme.colorScheme.onSurface
                     )
-                    InfoRow(icon = Icons.Filled.Person, label = "Nome", value = userName)
-                    Divider(modifier = Modifier.padding(vertical = 8.dp)) // Default color is outline
-                    InfoRow(icon = Icons.Filled.Email, label = "Email", value = userEmail)
-                    Divider(modifier = Modifier.padding(vertical = 8.dp))
-                    InfoRow(icon = Icons.Filled.Phone, label = "Telefono", value = userPhoneNumber)
+                    
+                    // Show loading or error state
+                    when (profileState) {
+                        is ProfileUiState.Loading -> {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    "Caricamento profilo...",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        }
+                        is ProfileUiState.Error -> {
+                            Text(
+                                "Errore nel caricamento: ${(profileState as ProfileUiState.Error).message}",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        }
+                        else -> {
+                            // Show profile data (Success or Idle with default values)
+                            InfoRow(icon = Icons.Filled.Person, label = "Nome", value = userName)
+                            Divider(modifier = Modifier.padding(vertical = 8.dp))
+                            InfoRow(icon = Icons.Filled.Email, label = "Email", value = userEmail)
+                            Divider(modifier = Modifier.padding(vertical = 8.dp))
+                            InfoRow(icon = Icons.Filled.Phone, label = "Telefono", value = userPhoneNumber)
+                        }
+                    }
                 }
             }
 
@@ -116,7 +161,11 @@ fun SettingsScreen(
             Spacer(modifier = Modifier.weight(1f)) // Push logout to bottom
 
             ElevatedButton(
-                onClick = onLogout,
+                onClick = { 
+                    // Pulisci le SharedPreferences quando si fa logout
+                    UserPreferences.getInstance(context).logout()
+                    onLogout()
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(all = 16.dp), // Consistent padding

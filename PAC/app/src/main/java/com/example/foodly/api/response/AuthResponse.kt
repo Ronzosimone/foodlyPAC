@@ -10,3 +10,11 @@ data class LoginResponse(
     val password: String,
     val surname: String,
 )
+
+@Serializable
+data class RegistrationResponse(
+    val email: String,
+    val id: Int,
+    val name: String,
+    val surname: String
+)

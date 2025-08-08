@@ -56,8 +56,9 @@ fun FoodlyApp(modifier: Modifier = Modifier) {
         composable(AppRoutes.REGISTRATION) {
             RegistrationScreen(
                 onRegistrationSuccess = {
-                    navController.navigate(AppRoutes.LOGIN) {
+                    navController.navigate(AppRoutes.HOME) {
                         popUpTo(AppRoutes.REGISTRATION) { inclusive = true } // Clear registration from back stack
+                        popUpTo(AppRoutes.LOGIN) { inclusive = true } // Clear login from back stack too
                     }
                 }
             )
