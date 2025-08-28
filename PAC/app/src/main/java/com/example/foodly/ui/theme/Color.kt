@@ -51,3 +51,9 @@ val ErrorDark = Color(0xFFF2B8B5)
 val OnErrorDark = Color(0xFF601410)
 val ErrorContainerDark = Color(0xFF8C1D18)
 val OnErrorContainerDark = Color(0xFFF9DEDC)
+
+val pie1 = Color(0xFF01AD12)
+val pie2 = Color(0xFFA20F00)
+val pie3 = Color(0xFFFFC107)
+val pie4 = Color(0xFF3F51B5)
+

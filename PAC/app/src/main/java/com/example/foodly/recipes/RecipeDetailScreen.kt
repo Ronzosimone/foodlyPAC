@@ -1,31 +1,46 @@
 package com.example.foodly.recipes
 
 import android.annotation.SuppressLint
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.FavoriteBorder // Or Favorite for filled heart
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import com.example.foodly.backend.Recipe // Assuming Recipe is in backend package
-import com.example.foodly.ui.theme.FoodlyTheme
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.graphics.Color
 import com.example.foodly.backend.Ingredient
+import com.example.foodly.backend.Recipe
+import com.example.foodly.ui.theme.FoodlyTheme
 import kotlinx.coroutines.flow.MutableStateFlow
+import java.util.Locale
+
+// Helper function to convert recipe title to Spoonacular URL format
+fun createSpoonacularUrl(title: String, id: Int): String {
+    val formattedTitle = title
+        .lowercase(Locale.getDefault())
+        .replace(Regex("[^a-z0-9\\s]"), "") // Remove special characters
+        .replace(Regex("\\s+"), "-") // Replace spaces with dashes
+        .trim('-') // Remove leading/trailing dashes
+    
+    return "https://spoonacular.com/$formattedTitle-$id"
+}
 
 // Mock Recipe Data (align with the structure in RecipeData.kt)
 // This can be removed if the screen exclusively relies on ViewModel passed data
@@ -109,8 +124,8 @@ fun RecipeDetailScreen(
             // Recipe found, display details
             Scaffold(
                 topBar = {
-                    CenterAlignedTopAppBar(
-                        title = { Text(recipe.title, maxLines = 2, style = MaterialTheme.typography.titleLarge) }, // Allow 2 lines for title
+                    TopAppBar(
+                        title = { Text("Recipe Detail", maxLines = 1, style = MaterialTheme.typography.titleLarge) }, // Allow 2 lines for title
                         navigationIcon = {
                             IconButton(onClick = onNavigateBack) {
                                 Icon(
@@ -128,77 +143,45 @@ fun RecipeDetailScreen(
                 },
                 containerColor = MaterialTheme.colorScheme.background
             ) { paddingValues ->
-                LazyColumn(
+                Column (
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(paddingValues)
                 ) {
-                    // Image
-                    item {
-                        Image(
-                            painter = rememberAsyncImagePainter(
-                                ImageRequest.Builder(LocalContext.current).data(data = recipe.image)
-                                    .apply(block = fun ImageRequest.Builder.() {
-                                        crossfade(true)
-                                    }).build()
-                            ),
-                            contentDescription = recipe.title,
+
+                        SpoonacularWebView(
+                            recipe = recipe,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(250.dp)
-                                .clip(MaterialTheme.shapes.medium),
-                            contentScale = ContentScale.Crop
+                                .fillMaxHeight()
                         )
-                    }
 
-                    // Likes Section
-                    item {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp, vertical = 12.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.FavoriteBorder,
-                                contentDescription = "Likes",
-                                tint = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.size(28.dp)
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(
-                                text = "${recipe.likes} likes",
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                        }
-                    }
-                    
-                    item { Divider(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) }
 
-                    // Used Ingredients Section
-                    if (recipe.usedIngredients.isNotEmpty()) {
+                    //item { Spacer(modifier = Modifier.height(16.dp)) }
+
+                    // Used Ingredients Section (keeping as backup info)
+                   /* if (recipe.usedIngredients.isNotEmpty()) {
                         item {
                             IngredientSection(
-                                title = "Used Ingredients (${recipe.usedIngredientCount})",
+                                title = "Ingredienti Utilizzati (${recipe.usedIngredientCount})",
                                 ingredients = recipe.usedIngredients
                             )
                         }
                         item { Spacer(modifier = Modifier.height(16.dp)) }
                     }
 
-                    // Missed Ingredients Section
+                    // Missed Ingredients Section (keeping as backup info)
                     if (recipe.missedIngredients.isNotEmpty()) {
                         item {
                             IngredientSection(
-                                title = "Missed Ingredients (${recipe.missedIngredientCount})",
+                                title = "Altri Ingredienti (${recipe.missedIngredientCount})",
                                 ingredients = recipe.missedIngredients,
                                 cardColor = MaterialTheme.colorScheme.surfaceVariant,
                                 contentColor = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                         item { Spacer(modifier = Modifier.height(16.dp)) }
-                    }
+                    }*/
                 }
             }
         }
@@ -214,6 +197,106 @@ fun RecipeDetailScreen(
             }
         }
     }
+}
+
+@SuppressLint("SetJavaScriptEnabled")
+@Composable
+fun SpoonacularWebView(
+    recipe: Recipe,
+    modifier: Modifier = Modifier
+) {
+    val spoonacularUrl = createSpoonacularUrl(recipe.title, recipe.id)
+    
+    AndroidView(
+        modifier = modifier,
+        factory = { context ->
+            WebView(context).apply {
+                settings.javaScriptEnabled = true
+                settings.domStorageEnabled = true
+                settings.loadWithOverviewMode = true
+                settings.useWideViewPort = true
+                settings.setSupportZoom(true)
+                settings.builtInZoomControls = true
+                settings.displayZoomControls = false
+
+                webViewClient = object : WebViewClient() {
+                    override fun onPageFinished(view: WebView?, url: String?) {
+                        super.onPageFinished(view, url)
+                        
+                        // JavaScript to show only the wrapper div with class row
+                        val javascript = """
+                            javascript:(function() {
+                                // Hide everything first
+                                document.body.style.display = 'none';
+                                
+                                // Find the wrapper element
+                                var wrapper = document.getElementById('wrapper');
+                                if (wrapper) {
+                                    // Create a new body content with only the wrapper
+                                    var newBody = document.createElement('div');
+                                    newBody.appendChild(wrapper.cloneNode(true));
+                                    
+                                    // Clear the body and add only our content
+                                    document.body.innerHTML = '';
+                                    document.body.appendChild(newBody);
+                                    
+                                    // Show the body again
+                                    document.body.style.display = 'block';
+                                    
+                                    // Additional styling to make it look better in our WebView
+                                    var style = document.createElement('style');
+                                    style.textContent = `
+                                        body { 
+                                            margin: 0; 
+                                            padding: 10px; 
+                                            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                                        }
+                                        .row { 
+                                            max-width: 100% !important; 
+                                            margin: 0 !important;
+                                        }
+                                        img { 
+                                            max-width: 100% !important; 
+                                            height: auto !important; 
+                                        }
+                                        .recipe-summary { 
+                                            font-size: 14px !important; 
+                                        }
+                                        .recipe-instructions { 
+                                            font-size: 14px !important; 
+                                        }
+                                        .ingredients-section { 
+                                            font-size: 14px !important; 
+                                        }
+                                        h1, h2, h3 { 
+                                            font-size: 18px !important; 
+                                            margin: 10px 0 !important; 
+                                        }
+                                    `;
+                                    document.head.appendChild(style);
+                                } else {
+                                    // Fallback: show the main content area
+                                    var mainContent = document.querySelector('.recipe-container, .main-content, main');
+                                    if (mainContent) {
+                                        document.body.innerHTML = '';
+                                        document.body.appendChild(mainContent.cloneNode(true));
+                                        document.body.style.display = 'block';
+                                    } else {
+                                        // If we can't find specific content, just show everything
+                                        document.body.style.display = 'block';
+                                    }
+                                }
+                            })();
+                        """.trimIndent()
+                        
+                        view?.evaluateJavascript(javascript, null)
+                    }
+                }
+                
+                loadUrl(spoonacularUrl)
+            }
+        }
+    )
 }
 
 @Composable
@@ -243,7 +326,7 @@ fun IngredientSection(
                         color = contentColor
                     )
                     if (index < ingredients.size - 1) {
-                        Divider(modifier = Modifier.padding(vertical = 8.dp), color = contentColor.copy(alpha = 0.2f))
+                        HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp), color = contentColor.copy(alpha = 0.2f))
                     }
                 }
             }

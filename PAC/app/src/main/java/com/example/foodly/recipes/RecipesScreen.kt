@@ -28,7 +28,8 @@ import com.example.foodly.ui.theme.FoodlyTheme
 @Composable
 fun RecipesScreen(
     modifier: Modifier = Modifier,
-    viewModel: RecipesViewModel = viewModel()
+    viewModel: RecipesViewModel = viewModel(),
+    onRecipeClick: ((Int) -> Unit)? = null // Add navigation callback
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -66,7 +67,10 @@ fun RecipesScreen(
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         items(state.recipes) { recipe ->
-                            RecipeItem(recipe = recipe)
+                            RecipeItem(
+                                recipe = recipe,
+                                onRecipeClick = onRecipeClick
+                            )
                         }
                     }
                 }
@@ -106,12 +110,16 @@ fun RecipesScreen(
 }
 
 @Composable
-fun RecipeItem(recipe: Recipe, modifier: Modifier = Modifier) {
+fun RecipeItem(
+    recipe: Recipe, 
+    modifier: Modifier = Modifier,
+    onRecipeClick: ((Int) -> Unit)? = null // Add navigation callback
+) {
     ElevatedCard(
         modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface),
         onClick = {
-            // TODO: Handle click, e.g., navigate to recipe detail
+            onRecipeClick?.invoke(recipe.id) // Navigate to recipe detail with recipe ID
         }
     ) {
         Column {
@@ -252,7 +260,10 @@ fun RecipesScreenPreview_Success() {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(recipes) { recipe ->
-                RecipeItem(recipe = recipe)
+                RecipeItem(
+                    recipe = recipe,
+                    onRecipeClick = { /* Preview - no action */ }
+                )
             }
         }
     }

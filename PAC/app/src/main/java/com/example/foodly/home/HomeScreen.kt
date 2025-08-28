@@ -74,8 +74,12 @@ fun HomeScreen(onLogout: () -> Unit) { // Added onLogout callback
                 // modifier = Modifier.padding(paddingValues) // Padding is now on the Surface
             ) {
                 composable(HomeNavRoutes.RICETTE) {
-                    // Pass the NavController to RecipesScreen
-                    com.example.foodly.recipes.RecipesScreen()
+                    // Pass the NavController to RecipesScreen with navigation callback
+                    com.example.foodly.recipes.RecipesScreen(
+                        onRecipeClick = { recipeId ->
+                            navController.navigate(HomeNavRoutes.createRecipeDetailRoute(recipeId))
+                        }
+                    )
                 }
                 composable(HomeNavRoutes.STATISTICHE) {
                     // New placeholder StatisticsScreen

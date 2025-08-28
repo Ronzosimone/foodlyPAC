@@ -87,7 +87,7 @@ fun SettingsScreen(
                         modifier = Modifier.padding(bottom = 16.dp),
                         color = MaterialTheme.colorScheme.onSurface
                     )
-                    
+
                     // Show loading or error state
                     when (profileState) {
                         is ProfileUiState.Loading -> {
@@ -161,7 +161,7 @@ fun SettingsScreen(
             Spacer(modifier = Modifier.weight(1f)) // Push logout to bottom
 
             ElevatedButton(
-                onClick = { 
+                onClick = {
                     // Pulisci le SharedPreferences quando si fa logout
                     UserPreferences.getInstance(context).logout()
                     onLogout()
