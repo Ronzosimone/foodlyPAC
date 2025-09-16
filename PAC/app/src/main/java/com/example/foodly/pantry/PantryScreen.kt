@@ -20,18 +20,35 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.foodly.api.UnitType
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PantryScreen(
     modifier: Modifier = Modifier,
-    viewModel: PantryViewModel = viewModel()
+    viewModel: PantryViewModel = viewModel(),
+    onRecipeRecommendationClick: () -> Unit = {}
 ) {
     val userPantryItems by viewModel.userPantryItems.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
+    val errorMessage by viewModel.errorMessage.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
     // For editing, null if adding new
     var editingItem by remember { mutableStateOf<UserPantryItem?>(null) }
     val context = LocalContext.current
+
+    // Carica la dispensa quando il composable viene creato
+    LaunchedEffect(Unit) {
+        viewModel.loadPantry(context)
+    }
+
+    // Mostra messaggio di errore se presente
+    LaunchedEffect(errorMessage) {
+        errorMessage?.let { message ->
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+            viewModel.clearError()
+        }
+    }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -53,11 +70,11 @@ fun PantryScreen(
             Surface( // Add a surface for elevation and theming if desired for bottom bar area
                 modifier = Modifier.fillMaxWidth(),
                 shadowElevation = 8.dp, // Example elevation for bottom bar area
-        color = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp) // Use surfaceColorAtElevation
+                color = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp) // Use surfaceColorAtElevation
             ) {
                 FilledTonalButton(
                     onClick = {
-                        Toast.makeText(context, "Recipe recommendation coming soon!", Toast.LENGTH_SHORT).show()
+                        onRecipeRecommendationClick()
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -88,7 +105,7 @@ fun PantryScreen(
                     contentPadding = PaddingValues(all = 16.dp), // Consistent padding
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(userPantryItems, key = { it.id }) { item ->
+                    items(userPantryItems, key = { it.apiId ?: it.id }) { item ->
                         PantryListItem(
                             item = item,
                             onRemove = { viewModel.removePantryItem(item.id) },
@@ -109,12 +126,13 @@ fun PantryScreen(
                 onDismiss = { showDialog = false },
                 onConfirm = { pantryItem, quantity, unit ->
                     if (editingItem == null) { // Adding new
-                        viewModel.addPantryItem(pantryItem, quantity, unit)
+                        viewModel.addPantryItem(context, pantryItem, quantity, unit)
                     } else { // Editing existing
                         viewModel.updatePantryItem(pantryItem.id, quantity, unit)
                     }
                     showDialog = false
-                }
+                },
+                isLoading = isLoading
             )
         }
     }
@@ -168,7 +186,8 @@ fun AddEditPantryItemDialog(
     viewModel: PantryViewModel,
     editingItem: UserPantryItem?, // if null, it's an "Add" dialog
     onDismiss: () -> Unit,
-    onConfirm: (selectedItem: PantryIngredientItem, quantity: Double, unit: String) -> Unit
+    onConfirm: (selectedItem: PantryIngredientItem, quantity: Double, unit: String) -> Unit,
+    isLoading: Boolean = false
 ) {
     var selectedIngredient by remember {
         mutableStateOf(editingItem?.pantryIngredient ?: viewModel.predefinedIngredients.first())
@@ -176,73 +195,124 @@ fun AddEditPantryItemDialog(
     var quantityStr by rememberSaveable(editingItem) {
         mutableStateOf(editingItem?.quantity?.toString() ?: "")
     }
-    var unit by rememberSaveable(editingItem) {
-        mutableStateOf(editingItem?.unit ?: selectedIngredient.defaultUnit)
+    var selectedUnitType by remember {
+        mutableStateOf(
+            if (editingItem?.unit?.lowercase() in listOf("g", "kg", "grams", "kilograms")) {
+                UnitType.GRAMS
+            } else {
+                UnitType.UNITS
+            }
+        )
     }
-    var expandedDropdown by remember { mutableStateOf(false) }
+    var expandedIngredientDropdown by remember { mutableStateOf(false) }
+    var expandedUnitDropdown by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
-    // Update unit when selectedIngredient changes, but only if not editing or unit is default
-    LaunchedEffect(selectedIngredient, editingItem) {
-        if (editingItem == null || unit == editingItem.pantryIngredient.defaultUnit) {
-            unit = selectedIngredient.defaultUnit
-        }
-    }
-
+    val unitOptions = listOf(
+        UnitType.UNITS to "Unità",
+        UnitType.GRAMS to "Grammi"
+    )
 
     AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(if (editingItem == null) "Add Ingredient" else "Edit Ingredient") },
+        onDismissRequest = { if (!isLoading) onDismiss() },
+        title = { Text(if (editingItem == null) "Aggiungi Ingrediente" else "Modifica Ingrediente") },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 // Ingredient Dropdown
                 Box {
                     OutlinedTextField(
                         value = selectedIngredient.name,
                         onValueChange = {},
                         readOnly = true,
-                        label = { Text("Ingredient") },
-                        trailingIcon = { Icon(Icons.Filled.ArrowDropDown, "Select ingredient", Modifier.clickable { expandedDropdown = true }) },
+                        enabled = !isLoading,
+                        label = { Text("Ingrediente") },
+                        trailingIcon = {
+                            Icon(
+                                Icons.Filled.ArrowDropDown,
+                                "Seleziona ingrediente",
+                                Modifier.clickable { if (!isLoading) expandedIngredientDropdown = true }
+                            )
+                        },
                         modifier = Modifier.fillMaxWidth(),
-                        // Rely on M3 default colors for OutlinedTextField
                     )
                     DropdownMenu(
-                        expanded = expandedDropdown,
-                        onDismissRequest = { expandedDropdown = false },
-                        modifier = Modifier.fillMaxWidth(0.8f), // Adjust width as needed
-                        // DropdownMenu background defaults to M3 surface
+                        expanded = expandedIngredientDropdown,
+                        onDismissRequest = { expandedIngredientDropdown = false },
+                        modifier = Modifier.fillMaxWidth(0.8f),
                     ) {
                         viewModel.predefinedIngredients.forEach { ingredient ->
                             DropdownMenuItem(
-                                text = { Text(ingredient.name, color = MaterialTheme.colorScheme.onSurface) }, // Ensure text color
+                                text = { Text(ingredient.name, color = MaterialTheme.colorScheme.onSurface) },
                                 onClick = {
                                     selectedIngredient = ingredient
-                                    unit = ingredient.defaultUnit // Reset unit to default of new ingredient
-                                    expandedDropdown = false
+                                    expandedIngredientDropdown = false
                                 }
                             )
                         }
                     }
                 }
 
-                // Quantity TextField - Rely on M3 defaults
+                // Quantity TextField
                 OutlinedTextField(
                     value = quantityStr,
                     onValueChange = { quantityStr = it.filter { char -> char.isDigit() || char == '.' } },
-                    label = { Text("Quantity") },
+                    enabled = !isLoading,
+                    label = { Text("Quantità") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                // Unit TextField - Rely on M3 defaults
-                OutlinedTextField(
-                    value = unit,
-                    onValueChange = { unit = it },
-                    label = { Text("Unit") },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
-                )
+                // Unit Type Dropdown
+                Box {
+                    OutlinedTextField(
+                        value = unitOptions.find { it.first == selectedUnitType }?.second ?: "",
+                        onValueChange = {},
+                        readOnly = true,
+                        enabled = !isLoading,
+                        label = { Text("Tipo di Unità") },
+                        trailingIcon = {
+                            Icon(
+                                Icons.Filled.ArrowDropDown,
+                                "Seleziona unità",
+                                Modifier.clickable { if (!isLoading) expandedUnitDropdown = true }
+                            )
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                    DropdownMenu(
+                        expanded = expandedUnitDropdown,
+                        onDismissRequest = { expandedUnitDropdown = false },
+                        modifier = Modifier.fillMaxWidth(0.8f),
+                    ) {
+                        unitOptions.forEach { (unitType, displayName) ->
+                            DropdownMenuItem(
+                                text = { Text(displayName, color = MaterialTheme.colorScheme.onSurface) },
+                                onClick = {
+                                    selectedUnitType = unitType
+                                    expandedUnitDropdown = false
+                                }
+                            )
+                        }
+                    }
+                }
+
+                // Mostra indicatore di caricamento se necessario
+                if (isLoading) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        CircularProgressIndicator(modifier = Modifier.size(16.dp))
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "Aggiungendo ingrediente...",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
             }
         },
         confirmButton = {
@@ -250,26 +320,32 @@ fun AddEditPantryItemDialog(
                 onClick = {
                     val quantity = quantityStr.toDoubleOrNull()
                     if (quantity == null || quantity <= 0) {
-                        Toast.makeText(context, "Please enter a valid quantity.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Inserisci una quantità valida.", Toast.LENGTH_SHORT).show()
                         return@ElevatedButton
                     }
-                    if (unit.isBlank()) {
-                        Toast.makeText(context, "Please enter a unit.", Toast.LENGTH_SHORT).show()
-                        return@ElevatedButton
+
+                    val unitString = when (selectedUnitType) {
+                        UnitType.GRAMS -> "g"
+                        UnitType.UNITS -> "unità"
                     }
-                    onConfirm(selectedIngredient, quantity, unit)
-                }
-                // Elevated button stands out
+
+                    onConfirm(selectedIngredient, quantity, unitString)
+                },
+                enabled = !isLoading
             ) {
-                Text("Confirm")
+                if (isLoading) {
+                    CircularProgressIndicator(modifier = Modifier.size(16.dp))
+                } else {
+                    Text("Conferma")
+                }
             }
         },
         dismissButton = {
             TextButton(
-                onClick = onDismiss
-                // Default M3 TextButton styling (text color will be primary)
+                onClick = onDismiss,
+                enabled = !isLoading
             ) {
-                Text("Cancel")
+                Text("Annulla")
             }
         }
     )

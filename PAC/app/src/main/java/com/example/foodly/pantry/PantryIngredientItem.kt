@@ -12,31 +12,20 @@ data class PantryIngredientItem(
 
 object PredefinedIngredients {
     val items = listOf(
-        PantryIngredientItem(1, "Flour", "g"),
-        PantryIngredientItem(2, "Sugar", "g"),
-        PantryIngredientItem(3, "Eggs", "pcs"),
-        PantryIngredientItem(4, "Milk", "ml"),
-        PantryIngredientItem(5, "Olive Oil", "ml"),
-        PantryIngredientItem(6, "Onion", "pcs"),
-        PantryIngredientItem(7, "Garlic", "cloves"),
-        PantryIngredientItem(8, "Tomatoes", "pcs"),
-        PantryIngredientItem(9, "Chicken Breast", "g"),
-        PantryIngredientItem(10, "Rice", "g"),
-        PantryIngredientItem(11, "Pasta", "g"),
-        PantryIngredientItem(12, "Salt", "g"),
-        PantryIngredientItem(13, "Pepper", "g"),
-        PantryIngredientItem(14, "Butter", "g"),
-        PantryIngredientItem(15, "Potatoes", "pcs"),
-        PantryIngredientItem(16, "Carrots", "pcs"),
-        PantryIngredientItem(17, "Cheese", "g"),
-        PantryIngredientItem(18, "Bread", "slices"),
-        PantryIngredientItem(19, "Lettuce", "pcs"),
-        PantryIngredientItem(20, "Beans", "cans"),
-        PantryIngredientItem(21, "Apples", "pcs"),
-        PantryIngredientItem(22, "Bananas", "pcs"),
-        PantryIngredientItem(23, "Orange Juice", "ml"),
-        PantryIngredientItem(24, "Ground Beef", "g"),
-        PantryIngredientItem(25, "Yogurt", "g")
+        PantryIngredientItem(1, "Carrots", "g"),
+        PantryIngredientItem(2, "Potato", "g"),
+        PantryIngredientItem(3, "Onion", "g"),
+        PantryIngredientItem(4, "Garlic", "g"),
+        PantryIngredientItem(5, "Tomato", "g"),
+        PantryIngredientItem(6, "Parsley", "g"),
+        PantryIngredientItem(7, "Bell pepper", "g"),
+        PantryIngredientItem(8, "Peas", "g"),
+        PantryIngredientItem(9, "Kale", "g"),
+        PantryIngredientItem(10, "Celery", "g"),
+        PantryIngredientItem(11, "Spinach", "g"),
+        PantryIngredientItem(12, "Couliflower", "g"),
+        PantryIngredientItem(13, "Cucumber", "g"),
+
         // Add more as desired
     )
 }

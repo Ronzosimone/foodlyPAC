@@ -3,6 +3,7 @@ package com.example.foodly.home
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -38,6 +39,7 @@ import androidx.navigation.navArgument
 import com.example.foodly.pantry.PantryScreen
 import com.example.foodly.recipes.RecipeDetailScreen
 import com.example.foodly.recipes.RecipesScreen
+import com.example.foodly.recipes.RecipeRecommendationsScreen
 import com.example.foodly.settings.SettingsScreen
 import com.example.foodly.statistics.StatisticsScreen
 
@@ -48,6 +50,7 @@ object HomeNavRoutes {
     const val DISPENSA = "home_dispensa"
     const val IMPOSTAZIONI = "home_impostazioni"
     const val RECIPE_DETAIL = "home_recipe_detail/{recipeId}"
+    const val RECIPE_RECOMMENDATIONS = "home_recipe_recommendations"
 
     fun createRecipeDetailRoute(recipeId: Int) = "home_recipe_detail/$recipeId"
 }
@@ -91,7 +94,16 @@ fun HomeScreen(onLogout: () -> Unit) { // Added onLogout callback
                 }
                 composable(HomeNavRoutes.DISPENSA) {
                     // New placeholder PantryScreen
-                    com.example.foodly.pantry.PantryScreen()
+                    com.example.foodly.pantry.PantryScreen(
+                        onRecipeRecommendationClick = {
+                            navController.navigate(HomeNavRoutes.RECIPE_RECOMMENDATIONS)
+                        }
+                    )
+                }
+                composable(HomeNavRoutes.RECIPE_RECOMMENDATIONS) {
+                    RecipeRecommendationsScreen(
+                        onBack = { navController.navigateUp() }
+                    )
                 }
                 composable(
                     route = HomeNavRoutes.RECIPE_DETAIL,
