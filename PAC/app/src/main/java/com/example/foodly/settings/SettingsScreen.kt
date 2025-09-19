@@ -37,7 +37,9 @@ fun SettingsScreen(
     val userName by viewModel.userName.collectAsState()
     val userEmail by viewModel.userEmail.collectAsState()
     val userPhoneNumber by viewModel.userPhoneNumber.collectAsState()
-    val notificationsEnabled by viewModel.notificationsEnabled.collectAsState()
+    val veganEnabled by viewModel.veganEnabled.collectAsState()
+    val vegetarianEnabled by viewModel.vegetarianEnabled.collectAsState()
+    val glutenFreeEnabled by viewModel.glutenFreeEnabled.collectAsState()
     val profileState by viewModel.profileUiState.collectAsState()
     val context = LocalContext.current
 
@@ -45,6 +47,8 @@ fun SettingsScreen(
     LaunchedEffect(Unit) {
         // Get real userId from SharedPreferences
         val userId = UserPreferences.getInstance(context).getUserId()
+        // Load persisted diet prefs (defaults are 0 -> false)
+        viewModel.loadDietPrefs(context)
         if (userId != null) {
             viewModel.loadProfile(userId, context)
         } else {
@@ -57,10 +61,15 @@ fun SettingsScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Impostazioni Profilo") },
+                title = {
+                    Text(
+                        "Impostazioni Profilo",
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp)
                 )
             )
         },
@@ -105,6 +114,7 @@ fun SettingsScreen(
                                 )
                             }
                         }
+
                         is ProfileUiState.Error -> {
                             Text(
                                 "Errore nel caricamento: ${(profileState as ProfileUiState.Error).message}",
@@ -112,13 +122,18 @@ fun SettingsScreen(
                                 color = MaterialTheme.colorScheme.error
                             )
                         }
+
                         else -> {
                             // Show profile data (Success or Idle with default values)
                             InfoRow(icon = Icons.Filled.Person, label = "Nome", value = userName)
                             Divider(modifier = Modifier.padding(vertical = 8.dp))
                             InfoRow(icon = Icons.Filled.Email, label = "Email", value = userEmail)
                             Divider(modifier = Modifier.padding(vertical = 8.dp))
-                            InfoRow(icon = Icons.Filled.Phone, label = "Telefono", value = userPhoneNumber)
+                            InfoRow(
+                                icon = Icons.Filled.Phone,
+                                label = "Telefono",
+                                value = userPhoneNumber
+                            )
                         }
                     }
                 }
@@ -136,25 +151,38 @@ fun SettingsScreen(
                 Column {
                     SettingItemRow(
                         icon = Icons.Filled.Notifications,
-                        title = "Notifiche",
-                        onClick = { /* Toggle notifications - viewModel call */ },
+                        title = "Vegan",
+                        onClick = { /* handled by switch */ },
                         trailingContent = {
-                            Switch( // Switch colors will be themed by M3
-                                checked = notificationsEnabled,
-                                onCheckedChange = { viewModel.setNotificationsEnabled(it) }
+                            Switch(
+                                checked = veganEnabled,
+                                onCheckedChange = { viewModel.setVeganEnabled(context, it) }
                             )
                         }
                     )
                     SettingItemRow(
-                        icon = Icons.Filled.Edit,
-                        title = "Cambia Password",
-                        onClick = { Toast.makeText(context, "Change Password Clicked", Toast.LENGTH_SHORT).show() }
+                        icon = Icons.Filled.Notifications,
+                        title = "Vegetarian",
+                        onClick = { /* handled by switch */ },
+                        trailingContent = {
+                            Switch(
+                                checked = vegetarianEnabled,
+                                onCheckedChange = { viewModel.setVegetarianEnabled(context, it) }
+                            )
+                        }
                     )
                     SettingItemRow(
-                        icon = Icons.Filled.Settings, // Consider a different icon for "Terms" e.g. Article
-                        title = "Termini di Servizio",
-                        onClick = { Toast.makeText(context, "Terms of Service Clicked", Toast.LENGTH_SHORT).show() }
+                        icon = Icons.Filled.Notifications,
+                        title = "Gluten free",
+                        onClick = { /* handled by switch */ },
+                        trailingContent = {
+                            Switch(
+                                checked = glutenFreeEnabled,
+                                onCheckedChange = { viewModel.setGlutenFreeEnabled(context, it) }
+                            )
+                        }
                     )
+
                 }
             }
 
@@ -171,7 +199,11 @@ fun SettingsScreen(
                     .padding(all = 16.dp), // Consistent padding
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error) // Correct for logout
             ) {
-                Icon(Icons.Filled.ExitToApp, contentDescription = "Logout Icon", modifier = Modifier.padding(end = 8.dp))
+                Icon(
+                    Icons.Filled.ExitToApp,
+                    contentDescription = "Logout Icon",
+                    modifier = Modifier.padding(end = 8.dp)
+                )
                 Text("Logout") // Text color will be onError by default
             }
         }
@@ -180,7 +212,10 @@ fun SettingsScreen(
 
 @Composable
 fun InfoRow(icon: androidx.compose.ui.graphics.vector.ImageVector, label: String, value: String) {
-    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(vertical = 8.dp)) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(vertical = 8.dp)
+    ) {
         Icon(
             icon,
             contentDescription = label,

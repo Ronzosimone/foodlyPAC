@@ -9,6 +9,7 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.headers
 import io.ktor.client.request.post
 import io.ktor.client.request.get
+import io.ktor.client.request.delete
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.URLProtocol
@@ -90,6 +91,54 @@ abstract class BaseApiClient(protected val client: HttpClient) {
                     val bearerToken = "qwerty"
                     append("Authorization", "Bearer $bearerToken")
                     Log.d("ApiClient", "GET User token: $bearerToken")
+                }
+            }
+
+            when (response.status.value) {
+                in 200..299 -> {
+                    val responseBody = response.body<BasicResponse<Res>>()
+                    Result.Success(responseBody.data)
+                }
+
+                in 600..601 -> {
+                    val responseBody = response.body<BasicResponse<Array<String>>>()
+                    val missingFields = responseBody.data?.joinToString() ?: ""
+                    val errorMessage = response.status.value.toString() + " " + response.status.description
+                    Log.e("ApiClient", errorMessage)
+                    Result.Error(errorMessage)
+                }
+
+                else -> {
+                    val errorMessage = response.status.value.toString() + " " + response.status.description
+                    Log.e("ApiClient", errorMessage)
+                    Result.Error(errorMessage)
+                }
+            }
+        } catch (e: Exception) {
+            val errorMessage = "Errore di rete"
+            Log.e("ApiClient", errorMessage, e)
+            Result.Error(errorMessage)
+        }
+    }
+
+    protected suspend inline fun <reified Res> deleteRequest(
+        url: String,
+        queryParams: Map<String, String> = emptyMap()
+    ): Result<Res?> {
+        return try {
+            val response = client.delete {
+                url {
+                    protocol = URLProtocol.HTTPS
+                    host = "ziiu2suca1.execute-api.eu-north-1.amazonaws.com/dev/api/v1"
+                    path(url)
+                    queryParams.forEach { (key, value) ->
+                        parameters.append(key, value)
+                    }
+                }
+                headers {
+                    val bearerToken = "qwerty"
+                    append("Authorization", "Bearer $bearerToken")
+                    Log.d("ApiClient", "DELETE User token: $bearerToken")
                 }
             }
 

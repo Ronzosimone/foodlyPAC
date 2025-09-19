@@ -14,3 +14,9 @@ data class AddPantryRequest(
 data class GetPantryRequest(
     val id_user: Int
 )
+
+@Serializable
+data class DeletePantryRequest(
+    val id_user: Int,
+    val id_ingredient: Int? = null // Se null, elimina tutti gli ingredienti
+)

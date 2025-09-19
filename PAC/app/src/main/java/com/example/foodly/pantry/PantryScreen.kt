@@ -52,63 +52,122 @@ fun PantryScreen(
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
-        containerColor = MaterialTheme.colorScheme.background, // Set screen background color
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    editingItem = null // Ensure we are in "add mode"
-                    showDialog = true
+        containerColor = MaterialTheme.colorScheme.surface,
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = { 
+                    Text(
+                        "Dispensa",
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = MaterialTheme.colorScheme.onSurface
+                    ) 
                 },
-                containerColor = MaterialTheme.colorScheme.primaryContainer, // M3 standard FAB color
-                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-            ) {
-                Icon(Icons.Filled.Add, contentDescription = "Add Ingredient")
-            }
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp)
+                )
+            )
+        },
+        floatingActionButton = {
+            // Empty - we moved the button to bottomBar
         },
         bottomBar = {
-            // Consider using a BottomAppBar if more actions are planned, or just a styled Button
-            Surface( // Add a surface for elevation and theming if desired for bottom bar area
+            Surface(
                 modifier = Modifier.fillMaxWidth(),
-                shadowElevation = 8.dp, // Example elevation for bottom bar area
-                color = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp) // Use surfaceColorAtElevation
+                color = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp),
+                tonalElevation = 3.dp
             ) {
-                FilledTonalButton(
-                    onClick = {
-                        onRecipeRecommendationClick()
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp), // Keep padding for the button itself
-                    // Uses tonal styling for a softer look
+                Column(
+                    modifier = Modifier.padding(20.dp)
                 ) {
-                    Text("Consigliami una ricetta")
+                    // FAB a destra
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        Button(
+                            onClick = {
+                                editingItem = null
+                                showDialog = true
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary
+                            ),
+                            shape = MaterialTheme.shapes.large
+                        ) {
+                            Icon(Icons.Filled.Add, contentDescription = "Add Ingredient")
+                            Spacer(Modifier.width(8.dp))
+                            Text("Aggiungi")
+                        }
+                    }
+                    
+                    Spacer(modifier = Modifier.height(12.dp))
+                    
+                    // Bottone principale
+                    Button(
+                        onClick = {
+                            onRecipeRecommendationClick()
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = MaterialTheme.shapes.large,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary
+                        )
+                    ) {
+                        Text(
+                            "Consigliami una ricetta",
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                    }
                 }
             }
         }
     ) { paddingValues ->
-        Column(modifier = Modifier.padding(paddingValues).fillMaxSize()) { // Ensure column fills size
+        Column(
+            modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxSize()
+        ) {
+            if (isLoading) {
+                LinearProgressIndicator(
+                    modifier = Modifier.fillMaxWidth(),
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+            
             if (userPantryItems.isEmpty()) {
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(16.dp)
+                        .padding(24.dp)
+
                 ) {
-                    Text(
-                        "Your pantry is empty. Add some ingredients!",
-                        style = MaterialTheme.typography.titleMedium, // Use theme typography
-                        color = MaterialTheme.colorScheme.onSurfaceVariant // Theme color
-                    )
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            "La tua dispensa è vuota",
+                            style = MaterialTheme.typography.headlineSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            "Aggiungi alcuni ingredienti per iniziare",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 }
             } else {
                 LazyColumn(
-                    contentPadding = PaddingValues(all = 16.dp), // Consistent padding
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    contentPadding = PaddingValues(horizontal = 20.dp, vertical = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     items(userPantryItems, key = { it.apiId ?: it.id }) { item ->
                         PantryListItem(
                             item = item,
-                            onRemove = { viewModel.removePantryItem(item.id) },
+                            onRemove = { viewModel.removePantryItem(context, item.id) },
                             onEdit = {
                                 editingItem = item
                                 showDialog = true
@@ -144,15 +203,19 @@ fun PantryListItem(
     onRemove: () -> Unit,
     onEdit: () -> Unit
 ) {
-    ElevatedCard(
+    Card(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onEdit() },
-        colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface)
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp)
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        shape = MaterialTheme.shapes.large
     ) {
         Row(
             modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 12.dp) // Consistent padding
+                .padding(20.dp)
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
@@ -161,19 +224,32 @@ fun PantryListItem(
                 Text(
                     text = item.pantryIngredient.name,
                     style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurface // Theme color
+                    color = MaterialTheme.colorScheme.onSurface
                 )
-                Text(
-                    text = "${item.quantity} ${item.unit}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant // Theme color
-                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Surface(
+                    color = MaterialTheme.colorScheme.primaryContainer,
+                    shape = MaterialTheme.shapes.small,
+                    modifier = Modifier.padding(top = 4.dp)
+                ) {
+                    Text(
+                        text = "${item.quantity} ${item.unit}",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                    )
+                }
             }
-            IconButton(onClick = onRemove) {
+            IconButton(
+                onClick = onRemove,
+                colors = IconButtonDefaults.iconButtonColors(
+                    contentColor = MaterialTheme.colorScheme.error
+                )
+            ) {
                 Icon(
                     Icons.Filled.Delete,
                     contentDescription = "Remove item",
-                    tint = MaterialTheme.colorScheme.error // Use error color for delete icon
+                    tint = MaterialTheme.colorScheme.error
                 )
             }
         }
@@ -215,9 +291,14 @@ fun AddEditPantryItemDialog(
 
     AlertDialog(
         onDismissRequest = { if (!isLoading) onDismiss() },
-        title = { Text(if (editingItem == null) "Aggiungi Ingrediente" else "Modifica Ingrediente") },
+        title = { 
+            Text(
+                if (editingItem == null) "Aggiungi Ingrediente" else "Modifica Ingrediente",
+                style = MaterialTheme.typography.headlineSmall
+            ) 
+        },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 // Ingredient Dropdown
                 Box {
                     OutlinedTextField(
@@ -234,6 +315,11 @@ fun AddEditPantryItemDialog(
                             )
                         },
                         modifier = Modifier.fillMaxWidth(),
+                        shape = MaterialTheme.shapes.medium,
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outline
+                        )
                     )
                     DropdownMenu(
                         expanded = expandedIngredientDropdown,
@@ -260,7 +346,12 @@ fun AddEditPantryItemDialog(
                     label = { Text("Quantità") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                     singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = MaterialTheme.shapes.medium,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outline
+                    )
                 )
 
                 // Unit Type Dropdown
@@ -279,6 +370,11 @@ fun AddEditPantryItemDialog(
                             )
                         },
                         modifier = Modifier.fillMaxWidth(),
+                        shape = MaterialTheme.shapes.medium,
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outline
+                        )
                     )
                     DropdownMenu(
                         expanded = expandedUnitDropdown,
@@ -299,29 +395,41 @@ fun AddEditPantryItemDialog(
 
                 // Mostra indicatore di caricamento se necessario
                 if (isLoading) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        CircularProgressIndicator(modifier = Modifier.size(16.dp))
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = "Aggiungendo ingrediente...",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.primaryContainer
                         )
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp)
+                        ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(20.dp),
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Text(
+                                text = "Aggiungendo ingrediente...",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer
+                            )
+                        }
                     }
                 }
             }
         },
         confirmButton = {
-            ElevatedButton(
+            Button (
                 onClick = {
                     val quantity = quantityStr.toDoubleOrNull()
                     if (quantity == null || quantity <= 0) {
                         Toast.makeText(context, "Inserisci una quantità valida.", Toast.LENGTH_SHORT).show()
-                        return@ElevatedButton
+                        return@Button
                     }
 
                     val unitString = when (selectedUnitType) {
@@ -331,23 +439,29 @@ fun AddEditPantryItemDialog(
 
                     onConfirm(selectedIngredient, quantity, unitString)
                 },
-                enabled = !isLoading
+                enabled = !isLoading,
+                shape = MaterialTheme.shapes.medium
             ) {
                 if (isLoading) {
-                    CircularProgressIndicator(modifier = Modifier.size(16.dp))
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(16.dp),
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
                 } else {
                     Text("Conferma")
                 }
             }
         },
         dismissButton = {
-            TextButton(
+            OutlinedButton(
                 onClick = onDismiss,
-                enabled = !isLoading
+                enabled = !isLoading,
+                shape = MaterialTheme.shapes.medium
             ) {
                 Text("Annulla")
             }
-        }
+        },
+        shape = MaterialTheme.shapes.extraLarge
     )
 }
 

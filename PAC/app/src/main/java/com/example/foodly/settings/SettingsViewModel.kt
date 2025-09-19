@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.foodly.api.ProfileApiClient
 import com.example.foodly.api.Result
 import com.example.foodly.api.response.ProfileResponse
+import com.example.foodly.utils.UserPreferences
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -34,12 +35,36 @@ class SettingsViewModel : ViewModel() {
     private val _userPhoneNumber = MutableStateFlow("+39 123 4567890")
     val userPhoneNumber: StateFlow<String> = _userPhoneNumber.asStateFlow()
 
-    // Mock state for a notification switch
-    private val _notificationsEnabled = MutableStateFlow(true)
-    val notificationsEnabled: StateFlow<Boolean> = _notificationsEnabled.asStateFlow()
+    // Diet switches (persisted in SharedPreferences as 0/1, default 0)
+    private val _veganEnabled = MutableStateFlow(false)
+    val veganEnabled: StateFlow<Boolean> = _veganEnabled.asStateFlow()
 
-    fun setNotificationsEnabled(enabled: Boolean) {
-        _notificationsEnabled.value = enabled
+    private val _vegetarianEnabled = MutableStateFlow(false)
+    val vegetarianEnabled: StateFlow<Boolean> = _vegetarianEnabled.asStateFlow()
+
+    private val _glutenFreeEnabled = MutableStateFlow(false)
+    val glutenFreeEnabled: StateFlow<Boolean> = _glutenFreeEnabled.asStateFlow()
+
+    fun loadDietPrefs(context: Context) {
+        val prefs = UserPreferences.getInstance(context)
+        _veganEnabled.value = prefs.isVegan()
+        _vegetarianEnabled.value = prefs.isVegetarian()
+        _glutenFreeEnabled.value = prefs.isGlutenFree()
+    }
+
+    fun setVeganEnabled(context: Context, enabled: Boolean) {
+        _veganEnabled.value = enabled
+        UserPreferences.getInstance(context).setVegan(enabled)
+    }
+
+    fun setVegetarianEnabled(context: Context, enabled: Boolean) {
+        _vegetarianEnabled.value = enabled
+        UserPreferences.getInstance(context).setVegetarian(enabled)
+    }
+
+    fun setGlutenFreeEnabled(context: Context, enabled: Boolean) {
+        _glutenFreeEnabled.value = enabled
+        UserPreferences.getInstance(context).setGlutenFree(enabled)
     }
 
     fun loadProfile(userId: Int, context: Context) {
@@ -71,7 +96,5 @@ class SettingsViewModel : ViewModel() {
     }
 
     // In a real app, these would have actual logic or be fetched from a repository
-    init {
-        // Load user settings if needed, for now, they are hardcoded.
-    }
+    init { /* explicit load triggered from UI with context */ }
 }

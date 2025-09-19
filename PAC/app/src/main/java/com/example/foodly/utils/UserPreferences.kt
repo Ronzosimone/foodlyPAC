@@ -13,6 +13,9 @@ class UserPreferences private constructor(context: Context) {
         private const val PREFS_NAME = "foodly_user_prefs"
         private const val KEY_USER_ID = "user_id"
         private const val KEY_IS_LOGGED_IN = "is_logged_in"
+    private const val KEY_DIET_VEGAN = "diet_vegan"           // 0 or 1
+    private const val KEY_DIET_VEGETARIAN = "diet_vegetarian" // 0 or 1
+    private const val KEY_DIET_GLUTEN_FREE = "diet_gluten_free" // 0 or 1
         
         @Volatile
         private var INSTANCE: UserPreferences? = null
@@ -70,4 +73,26 @@ class UserPreferences private constructor(context: Context) {
     fun clearAll() {
         sharedPreferences.edit().clear().apply()
     }
+
+    // ---- Diet Preferences (0 disabled, 1 enabled) ----
+    fun setVegan(enabled: Boolean) {
+        sharedPreferences.edit { putInt(KEY_DIET_VEGAN, if (enabled) 1 else 0) }
+    }
+
+    fun isVegan(): Boolean = sharedPreferences.getInt(KEY_DIET_VEGAN, 0) == 1
+    fun getVeganInt(): Int = sharedPreferences.getInt(KEY_DIET_VEGAN, 0)
+
+    fun setVegetarian(enabled: Boolean) {
+        sharedPreferences.edit { putInt(KEY_DIET_VEGETARIAN, if (enabled) 1 else 0) }
+    }
+
+    fun isVegetarian(): Boolean = sharedPreferences.getInt(KEY_DIET_VEGETARIAN, 0) == 1
+    fun getVegetarianInt(): Int = sharedPreferences.getInt(KEY_DIET_VEGETARIAN, 0)
+
+    fun setGlutenFree(enabled: Boolean) {
+        sharedPreferences.edit { putInt(KEY_DIET_GLUTEN_FREE, if (enabled) 1 else 0) }
+    }
+
+    fun isGlutenFree(): Boolean = sharedPreferences.getInt(KEY_DIET_GLUTEN_FREE, 0) == 1
+    fun getGlutenFreeInt(): Int = sharedPreferences.getInt(KEY_DIET_GLUTEN_FREE, 0)
 }

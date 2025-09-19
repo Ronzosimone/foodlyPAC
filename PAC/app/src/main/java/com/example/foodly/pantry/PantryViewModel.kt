@@ -199,6 +199,73 @@ class PantryViewModel : ViewModel() {
         }
     }
 
+    fun removePantryItem(context: Context, itemId: Int) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _errorMessage.value = null
+
+            try {
+                // Trova l'item da eliminare per ottenere l'ID dell'ingrediente
+                val itemToRemove = _userPantryItems.value.find { it.id == itemId }
+                if (itemToRemove == null) {
+                    _errorMessage.value = "Ingrediente non trovato"
+                    return@launch
+                }
+
+                // Chiama l'API per eliminare l'ingrediente
+                when (val result = PantryApiClient.deletePantryItem(
+                    context = context,
+                    ingredientId = itemToRemove.pantryIngredient.id
+                )) {
+                    is Result.Success -> {
+                        Log.d("PantryViewModel", "Pantry item deleted successfully: ${result.data.message}")
+                        // Ricarica la dispensa dall'API per avere i dati aggiornati
+                        loadPantry(context)
+                    }
+                    is Result.Error -> {
+                        _errorMessage.value = result.message
+                        Log.e("PantryViewModel", "Error deleting pantry item: ${result.message}")
+                    }
+                }
+            } catch (e: Exception) {
+                _errorMessage.value = "Errore durante l'eliminazione dell'ingrediente"
+                Log.e("PantryViewModel", "Exception deleting pantry item", e)
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun clearAllPantryItems(context: Context) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _errorMessage.value = null
+
+            try {
+                // Chiama l'API per eliminare tutti gli ingredienti (id_ingredient = null)
+                when (val result = PantryApiClient.deletePantryItem(
+                    context = context,
+                    ingredientId = null
+                )) {
+                    is Result.Success -> {
+                        Log.d("PantryViewModel", "All pantry items deleted successfully: ${result.data.message}")
+                        // Svuota la lista locale
+                        _userPantryItems.value = emptyList()
+                    }
+                    is Result.Error -> {
+                        _errorMessage.value = result.message
+                        Log.e("PantryViewModel", "Error deleting all pantry items: ${result.message}")
+                    }
+                }
+            } catch (e: Exception) {
+                _errorMessage.value = "Errore durante l'eliminazione di tutti gli ingredienti"
+                Log.e("PantryViewModel", "Exception deleting all pantry items", e)
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
     fun updatePantryItem(itemId: Int, newQuantity: Double, newUnit: String) {
         _userPantryItems.update { currentList ->
             currentList.map {

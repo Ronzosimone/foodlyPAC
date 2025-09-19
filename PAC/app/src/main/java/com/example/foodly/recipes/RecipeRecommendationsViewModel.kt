@@ -36,16 +36,12 @@ class RecipeRecommendationsViewModel : ViewModel() {
             _uiState.value = RecipeRecommendationsUiState.Loading
             when (val result = RecipesApiClient.getGreedyRecipes(context)) {
                 is Result.Success -> {
-                    val response = result.data
-                    if (response != null) {
-                        _uiState.value = RecipeRecommendationsUiState.Success(
-                            recipes = response.data.ricette_selezionate,
-                            remainingIngredients = response.data.ingredienti_residui
-                        )
-                        Log.d("RecipeRecommendationsViewModel", "Successfully loaded ${response.data.ricette_selezionate.size} recipes")
-                    } else {
-                        _uiState.value = RecipeRecommendationsUiState.Error("Nessun dato ricevuto dal server")
-                    }
+                    val data = result.data
+                    _uiState.value = RecipeRecommendationsUiState.Success(
+                        recipes = data.ricette_selezionate,
+                        remainingIngredients = data.ingredienti_residui
+                    )
+                    Log.d("RecipeRecommendationsViewModel", "Successfully loaded ${data.ricette_selezionate.size} recipes")
                 }
                 is Result.Error -> {
                     _uiState.value = RecipeRecommendationsUiState.Error(result.message)
