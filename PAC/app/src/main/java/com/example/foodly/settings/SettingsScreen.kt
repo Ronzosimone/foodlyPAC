@@ -1,26 +1,25 @@
 package com.example.foodly.settings
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import com.example.foodly.R
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -63,7 +62,7 @@ fun SettingsScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        "Profile Settings",
+                        "Profile settings",
                         style = MaterialTheme.typography.headlineSmall,
                         color = MaterialTheme.colorScheme.onSurface
                     )
@@ -91,7 +90,7 @@ fun SettingsScreen(
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
-                        "User Information",
+                        "User information",
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(bottom = 16.dp),
                         color = MaterialTheme.colorScheme.onSurface
@@ -108,7 +107,7 @@ fun SettingsScreen(
                                 CircularProgressIndicator(modifier = Modifier.size(24.dp))
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
-                                    "Loading profile...",
+                                    "Caricamento profilo...",
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
@@ -117,7 +116,7 @@ fun SettingsScreen(
 
                         is ProfileUiState.Error -> {
                             Text(
-                                "Loading error: ${(profileState as ProfileUiState.Error).message}",
+                                "Errore nel caricamento: ${(profileState as ProfileUiState.Error).message}",
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.error
                             )
@@ -127,13 +126,8 @@ fun SettingsScreen(
                             // Show profile data (Success or Idle with default values)
                             InfoRow(icon = Icons.Filled.Person, label = "Name", value = userName)
                             Divider(modifier = Modifier.padding(vertical = 8.dp))
-                            InfoRow(icon = Icons.Filled.Email, label = "Email", value = userEmail)
-                            Divider(modifier = Modifier.padding(vertical = 8.dp))
-                            InfoRow(
-                                icon = Icons.Filled.Phone,
-                                label = "Phone",
-                                value = userPhoneNumber
-                            )
+                            InfoRow(icon = Icons.Filled.Email, label = "E-mail", value = userEmail)
+
                         }
                     }
                 }
@@ -150,7 +144,7 @@ fun SettingsScreen(
             ) {
                 Column {
                     SettingItemRow(
-                        icon = Icons.Filled.Notifications,
+                        icon = R.drawable.ic_vegan,
                         title = "Vegan",
                         onClick = { /* handled by switch */ },
                         trailingContent = {
@@ -161,7 +155,7 @@ fun SettingsScreen(
                         }
                     )
                     SettingItemRow(
-                        icon = Icons.Filled.Notifications,
+                        icon = R.drawable.ic_vegetarian,
                         title = "Vegetarian",
                         onClick = { /* handled by switch */ },
                         trailingContent = {
@@ -172,7 +166,7 @@ fun SettingsScreen(
                         }
                     )
                     SettingItemRow(
-                        icon = Icons.Filled.Notifications,
+                        icon = R.drawable.ic_glutenfree,
                         title = "Gluten free",
                         onClick = { /* handled by switch */ },
                         trailingContent = {
@@ -241,10 +235,10 @@ fun InfoRow(icon: androidx.compose.ui.graphics.vector.ImageVector, label: String
 
 @Composable
 fun SettingItemRow(
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    icon: Int,
     title: String,
     onClick: () -> Unit,
-    trailingContent: (@Composable () -> Unit)? = null
+    trailingContent: @Composable (() -> Unit)? = null
 ) {
     Row(
         modifier = Modifier
@@ -254,10 +248,10 @@ fun SettingItemRow(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            icon,
+            painter = painterResource(id = icon), // Per usare un Int (ID risorsa) correttamente
             contentDescription = title,
             modifier = Modifier.size(24.dp),
-            tint = MaterialTheme.colorScheme.secondary // Changed tint to secondary
+            tint = MaterialTheme.colorScheme.secondary
         )
         Spacer(modifier = Modifier.width(16.dp))
         Text(
