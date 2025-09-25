@@ -1,5 +1,6 @@
 package com.example.foodly.recipes
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,6 +29,7 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.example.foodly.api.response.RecipeRecommendation
 
+@SuppressLint("DefaultLocale")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecipeRecommendationsScreen(
@@ -58,7 +60,7 @@ fun RecipeRecommendationsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Ricette Consigliate") },
+                title = { Text("Recipe Recommendations") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
@@ -85,7 +87,7 @@ fun RecipeRecommendationsScreen(
                         ) {
                             CircularProgressIndicator()
                             Text(
-                                "Calcolando le migliori ricette...",
+                                "Calculating the best recipes...",
                                 style = MaterialTheme.typography.bodyMedium
                             )
                         }
@@ -93,36 +95,8 @@ fun RecipeRecommendationsScreen(
                 }
 
                 is RecipeRecommendationsUiState.Success -> {
-                    // Mostra gli ingredienti residui se ci sono
-                    if (state.remainingIngredients.isNotEmpty()) {
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.secondaryContainer
-                            )
-                        ) {
-                            Column(
-                                modifier = Modifier.padding(16.dp)
-                            ) {
-                                Text(
-                                    "Ingredienti residui:",
-                                    style = MaterialTheme.typography.titleSmall,
-                                    fontWeight = FontWeight.Bold
-                                )
-                                Spacer(modifier = Modifier.height(8.dp))
-                                state.remainingIngredients.forEach { (ingredient, quantity) ->
-                                    if (quantity > 0) {
-                                        Text(
-                                            "• $ingredient: ${String.format("%.2f", quantity)}",
-                                            style = MaterialTheme.typography.bodySmall
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    // Show remaining ingredients if any
+
 
                     // Lista delle ricette
                     if (state.recipes.isNotEmpty()) {
@@ -130,6 +104,43 @@ fun RecipeRecommendationsScreen(
                             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                             verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
+                            if (state.remainingIngredients.isNotEmpty()) {
+
+                                items(1) { recipe ->
+                                    Card(
+                                        modifier = Modifier
+                                            .fillMaxWidth(),
+
+                                        colors = CardDefaults.cardColors(
+                                            containerColor = MaterialTheme.colorScheme.secondaryContainer
+                                        )
+                                    ) {
+                                        Column(
+                                            modifier = Modifier.padding(16.dp)
+                                        ) {
+                                            Text(
+                                                "Remaining ingredients:",
+                                                style = MaterialTheme.typography.titleSmall,
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                            Spacer(modifier = Modifier.height(8.dp))
+                                            state.remainingIngredients.forEach { (ingredient, quantity) ->
+                                                if (quantity > 0) {
+                                                    Text(
+                                                        "• $ingredient: ${
+                                                            String.format(
+                                                                "%.2f",
+                                                                quantity
+                                                            )
+                                                        } g",
+                                                        style = MaterialTheme.typography.bodySmall
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                             items(state.recipes) { recipe ->
                                 RecipeRecommendationCard(
                                     recipe = recipe,
@@ -156,12 +167,12 @@ fun RecipeRecommendationsScreen(
                                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                                 Text(
-                                    "Nessuna ricetta trovata",
+                                    "No recipes found",
                                     style = MaterialTheme.typography.titleMedium,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                                 Text(
-                                    "Aggiungi più ingredienti al tuo pantry per ottenere suggerimenti",
+                                    "Add more ingredients to your pantry to get suggestions",
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
@@ -180,7 +191,7 @@ fun RecipeRecommendationsScreen(
                             verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
                             Text(
-                                "Errore nel caricamento delle ricette",
+                                "Error loading recipes",
                                 style = MaterialTheme.typography.titleMedium,
                                 color = MaterialTheme.colorScheme.error
                             )
@@ -288,7 +299,7 @@ fun RecipeRecommendationCard(
                                 strokeWidth = 2.dp
                             )
                         } else {
-                            Text("Aggiungi")
+                            Text("Add")
                         }
                     }
                 }

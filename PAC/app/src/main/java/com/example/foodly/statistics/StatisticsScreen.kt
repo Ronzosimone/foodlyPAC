@@ -45,7 +45,7 @@ fun StatisticsScreen(
     val isLoading by viewModel.isLoading.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
 
-    // Carica i dati quando il composable viene creato
+    // Load data when composable is created
     LaunchedEffect(Unit) {
         viewModel.loadStatistics(context)
     }
@@ -55,7 +55,7 @@ fun StatisticsScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        "Le tue Statistiche settimanali",
+                        "Your Weekly Statistics",
                         style = MaterialTheme.typography.headlineSmall,
                         color = MaterialTheme.colorScheme.onSurface
                     )
@@ -78,7 +78,7 @@ fun StatisticsScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            // Mostra loading, error o contenuto
+            // Show loading, error or content
             when {
                 isLoading -> {
                     Box(
@@ -115,7 +115,7 @@ fun NutritionalDataCard(nutritionalData: NutritionalData) {
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
-                text = "Composizione Nutrizionale Media",
+                text = "Average Nutritional Composition",
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.padding(bottom = 16.dp)
@@ -131,7 +131,7 @@ fun NutritionalDataCard(nutritionalData: NutritionalData) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Legenda
+            // Legend
             NutritionalLegend(nutritionalData)
         }
     }
@@ -167,7 +167,7 @@ fun PieChart(
         val radius = size.minDimension / 3
         val center = Offset(size.width / 2, size.height / 2)
 
-        var currentAngle = -90f // Inizia dall'alto
+        var currentAngle = -90f // Start from top
 
         sweepAngles.forEachIndexed { index, sweepAngle ->
             drawArc(
@@ -184,7 +184,7 @@ fun PieChart(
             currentAngle += sweepAngle
         }
 
-        // Disegna un cerchio interno per creare l'effetto "donut"
+        // Draw inner circle to create "donut" effect
         drawCircle(
             color = androidx.compose.ui.graphics.Color.White,
             radius = radius * 0.5f,
@@ -198,10 +198,10 @@ fun NutritionalLegend(nutritionalData: NutritionalData) {
     val legendItems = listOf(
         //"Calorie" to "${nutritionalData.calories.toInt()} kcal" to MaterialTheme.colorScheme.primary,
 
-        "Carboidrati" to "${nutritionalData.carbohydrates.toInt()}g" to pie1,
-        "Grassi" to "${nutritionalData.fat.toInt()}g" to pie2,
-        "Fibre" to "${nutritionalData.fiber.toInt()}g" to pie3,
-        "Proteine" to "${nutritionalData.protein.toInt()}g" to pie4,
+        "Carbohydrates" to "${nutritionalData.carbohydrates.toInt()}g" to pie1,
+        "Fats" to "${nutritionalData.fat.toInt()}g" to pie2,
+        "Fiber" to "${nutritionalData.fiber.toInt()}g" to pie3,
+        "Proteins" to "${nutritionalData.protein.toInt()}g" to pie4,
 
         )
 
@@ -251,7 +251,7 @@ fun ErrorCard(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Errore",
+                text = "Error",
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onErrorContainer
             )
@@ -266,10 +266,10 @@ fun ErrorCard(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 TextButton(onClick = onDismiss) {
-                    Text("Chiudi")
+                    Text("Close")
                 }
                 Button(onClick = onRetry) {
-                    Text("Riprova")
+                    Text("Retry")
                 }
             }
         }
@@ -284,7 +284,7 @@ fun HealthyScoreCard(score: Float) {
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
-                text = "Punteggio Salute",
+                text = "Health Score",
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onSurface, // Text on surface
                 modifier = Modifier.padding(bottom = 12.dp)
@@ -307,7 +307,7 @@ fun HealthyScoreCard(score: Float) {
             }
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                "Il tuo punteggio salute settimanale.",
+                "Your weekly health score.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant // Muted helper text
             )
@@ -345,7 +345,7 @@ fun CaloriesScoreCard(score: Float, modifier: Modifier = Modifier) {
             )
 
             Text(
-                "di kCal medie consumate nell'ultima settimana",
+                "of average kCal consumed in the last week",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier

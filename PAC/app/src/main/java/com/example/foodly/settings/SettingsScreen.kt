@@ -63,7 +63,7 @@ fun SettingsScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        "Impostazioni Profilo",
+                        "Profile Settings",
                         style = MaterialTheme.typography.headlineSmall,
                         color = MaterialTheme.colorScheme.onSurface
                     )
@@ -91,7 +91,7 @@ fun SettingsScreen(
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
-                        "Informazioni Utente",
+                        "User Information",
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(bottom = 16.dp),
                         color = MaterialTheme.colorScheme.onSurface
@@ -108,7 +108,7 @@ fun SettingsScreen(
                                 CircularProgressIndicator(modifier = Modifier.size(24.dp))
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
-                                    "Caricamento profilo...",
+                                    "Loading profile...",
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
@@ -117,7 +117,7 @@ fun SettingsScreen(
 
                         is ProfileUiState.Error -> {
                             Text(
-                                "Errore nel caricamento: ${(profileState as ProfileUiState.Error).message}",
+                                "Loading error: ${(profileState as ProfileUiState.Error).message}",
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.error
                             )
@@ -125,13 +125,13 @@ fun SettingsScreen(
 
                         else -> {
                             // Show profile data (Success or Idle with default values)
-                            InfoRow(icon = Icons.Filled.Person, label = "Nome", value = userName)
+                            InfoRow(icon = Icons.Filled.Person, label = "Name", value = userName)
                             Divider(modifier = Modifier.padding(vertical = 8.dp))
                             InfoRow(icon = Icons.Filled.Email, label = "Email", value = userEmail)
                             Divider(modifier = Modifier.padding(vertical = 8.dp))
                             InfoRow(
                                 icon = Icons.Filled.Phone,
-                                label = "Telefono",
+                                label = "Phone",
                                 value = userPhoneNumber
                             )
                         }

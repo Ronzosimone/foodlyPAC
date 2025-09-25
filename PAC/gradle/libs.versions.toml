@@ -18,6 +18,7 @@ navigationComposeAndroid = "2.9.0" # Kotlinx Serialization version
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-material-icons-extended-android = { module = "androidx.compose.material:material-icons-extended-android" }
 compose = { module = "com.patrykandpatryk.vico:compose", version.ref = "composeM3" }
 compose-m3 = { module = "com.patrykandpatryk.vico:compose-m3", version.ref = "composeM3" }
 core = { module = "com.patrykandpatryk.vico:core", version.ref = "composeM3" }
@@ -56,6 +57,7 @@ ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-conte
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
 androidx-navigation-compose-android = { group = "androidx.navigation", name = "navigation-compose-android", version.ref = "navigationComposeAndroid" }
 logback-classic-v1211 = { module = "ch.qos.logback:logback-classic", version.ref = "logbackClassic" }
+material3 = { module = "androidx.compose.material3:material3" }
 
 
 [plugins]

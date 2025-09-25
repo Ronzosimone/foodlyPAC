@@ -47,6 +47,7 @@ abstract class BaseApiClient(protected val client: HttpClient) {
             when (response.status.value) {
                 in 200..299 -> {
                     val responseBody = response.body<BasicResponse<Res>>()
+                    // Handle null data as successful empty result (e.g., no statistics available)
                     Result.Success(responseBody.data)
                 }
 
@@ -66,7 +67,7 @@ abstract class BaseApiClient(protected val client: HttpClient) {
                 }
             }
         } catch (e: Exception) {
-            val errorMessage = "Errore di rete"
+            val errorMessage = "Network error"
             Log.e("AuthApiClient", errorMessage, e)
             Result.Error(errorMessage)
         }
@@ -97,6 +98,7 @@ abstract class BaseApiClient(protected val client: HttpClient) {
             when (response.status.value) {
                 in 200..299 -> {
                     val responseBody = response.body<BasicResponse<Res>>()
+                    // Handle null data as successful empty result (e.g., no statistics available)
                     Result.Success(responseBody.data)
                 }
 
@@ -115,7 +117,7 @@ abstract class BaseApiClient(protected val client: HttpClient) {
                 }
             }
         } catch (e: Exception) {
-            val errorMessage = "Errore di rete"
+            val errorMessage = "Network error"
             Log.e("ApiClient", errorMessage, e)
             Result.Error(errorMessage)
         }
@@ -145,6 +147,7 @@ abstract class BaseApiClient(protected val client: HttpClient) {
             when (response.status.value) {
                 in 200..299 -> {
                     val responseBody = response.body<BasicResponse<Res>>()
+                    // Handle null data as successful empty result (e.g., no statistics available)
                     Result.Success(responseBody.data)
                 }
 
@@ -163,7 +166,7 @@ abstract class BaseApiClient(protected val client: HttpClient) {
                 }
             }
         } catch (e: Exception) {
-            val errorMessage = "Errore di rete"
+            val errorMessage = "Network error"
             Log.e("ApiClient", errorMessage, e)
             Result.Error(errorMessage)
         }

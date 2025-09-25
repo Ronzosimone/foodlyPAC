@@ -115,8 +115,8 @@ class PantryViewModel : ViewModel() {
                 else 1.0 to "g"
             }
             "units", "unità", "pcs", "pieces" -> {
-                if (apiItem.units > 0) apiItem.units.toDouble() to "unità"
-                else 1.0 to "unità"
+                if (apiItem.units > 0) apiItem.units.toDouble() to "units"
+                else 1.0 to "units"
             }
             "cups", "cup" -> {
                 if (apiItem.cups > 0) apiItem.cups to "cups"
@@ -155,7 +155,7 @@ class PantryViewModel : ViewModel() {
                     context = context,
                     ingredientId = item.id,
                     quantity = quantity.toString(),
-                    unitType = unitType
+                    unitType = unitType,
                 )) {
                     is Result.Success -> {
                         // Successo: ricarica la dispensa dall'API per avere i dati aggiornati

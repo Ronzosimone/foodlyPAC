@@ -43,6 +43,6 @@ object RecipesApiClient : BaseApiClient(NetworkSingleton.httpClient) {
     )
     // BaseApiClient returns Result<GreedyRecipesData?>, convert to non-null Result
     val rawResult = getRequest<GreedyRecipesData>("GetGreedyRecipes", queryParams)
-    return handleResultWithNullCheck(rawResult, "Nessun dato ricevuto per le ricette consigliate")
+    return handleResultWithNullCheck(rawResult, "No data received for recipe recommendations")
     }
 }

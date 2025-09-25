@@ -80,6 +80,9 @@ dependencies {
     // Coil per immagini
     implementation("io.coil-kt:coil-compose:2.5.0")
 
+    implementation(libs.androidx.material.icons.extended.android)
+    implementation(libs.material3)
+
     // Vico per chart
     implementation(libs.core)
     implementation(libs.compose)

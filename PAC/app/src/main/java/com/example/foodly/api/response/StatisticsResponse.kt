@@ -4,18 +4,18 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class StatisticsResponse(
-    val average: NutritionalAverage,
-    val id_user: String,
-    val recipes: Int,
+    val average: NutritionalAverage? = null,
+    val id_user: String? = null,
+    val recipes: Int? = null,
 )
 
 @Serializable
 data class NutritionalAverage(
-    val calories: Double,
-    val carbohydrates: Double,
-    val fat: Double,
-    val fiber: Double,
-    val healty_score: Double,
-    val protein: Double,
-    val saturated_fat: Double
+    val calories: Double? = null,
+    val carbohydrates: Double? = null,
+    val fat: Double? = null,
+    val fiber: Double? = null,
+    val healty_score: Double? = null,
+    val protein: Double? = null,
+    val saturated_fat: Double? = null
 )

@@ -53,7 +53,7 @@ fun RegistrationScreen(
         ) {
             Image(
                 painter = painterResource(R.drawable.logo), // Ensure this drawable exists
-                contentDescription = "Logo Foodly",
+                contentDescription = "Foodly Logo",
                 modifier = Modifier.fillMaxSize() // Image fills the card
             )
         }

@@ -1,16 +1,14 @@
 package com.example.foodly.home
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Menu
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import com.example.foodly.R // Importa la classe R del tuo progetto
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -21,13 +19,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -36,12 +32,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 // Import new placeholder screens
-import com.example.foodly.pantry.PantryScreen
 import com.example.foodly.recipes.RecipeDetailScreen
-import com.example.foodly.recipes.RecipesScreen
 import com.example.foodly.recipes.RecipeRecommendationsScreen
-import com.example.foodly.settings.SettingsScreen
-import com.example.foodly.statistics.StatisticsScreen
 
 // Define navigation routes specifically for screens reachable from HomeScreen's BottomNavigation
 object HomeNavRoutes {
@@ -123,11 +115,11 @@ fun HomeScreen(onLogout: () -> Unit) { // Added onLogout callback
 }
 
 // Internal Navigation items for BottomNavigation
-private sealed class BottomNavItem(val route: String, val icon: ImageVector, val title: String) {
-    object Ricette : BottomNavItem(HomeNavRoutes.RICETTE, Icons.Outlined.Menu, "Ricette")
-    object Statistiche : BottomNavItem(HomeNavRoutes.STATISTICHE, Icons.Outlined.Info, "Statistica")
-    object Dispensa : BottomNavItem(HomeNavRoutes.DISPENSA, Icons.Filled.ShoppingCart, "Dispensa")
-    object Impostazioni : BottomNavItem(HomeNavRoutes.IMPOSTAZIONI, Icons.Filled.Settings, "Impostazioni")
+private sealed class BottomNavItem(val route: String, val icon: Int, val title: String) {
+    object Ricette : BottomNavItem(HomeNavRoutes.RICETTE, R.drawable.ic_receipt, "Recipes")
+    object Statistiche : BottomNavItem(HomeNavRoutes.STATISTICHE, R.drawable.ic_stats, "Statistics")
+    object Dispensa : BottomNavItem(HomeNavRoutes.DISPENSA, R.drawable.ic_grocery, "Pantry")
+    object Impostazioni : BottomNavItem(HomeNavRoutes.IMPOSTAZIONI, R.drawable.ic_settings, "Settings")
 }
 
 @Composable
@@ -147,8 +139,14 @@ fun BottomNavigation(navController: NavController) {
 
         items.forEach { item ->
             NavigationBarItem(
-                icon = { Icon(item.icon, contentDescription = item.title) },
-                label = { Text(text = item.title) },
+                icon = {
+                    when (val iconResource = item.icon) { // 'iconResource' è il valore di item.icon
+                        is Int -> { // Se item.icon è un Int (ID della risorsa drawable)
+                            Icon(painter = painterResource(id = iconResource), contentDescription = item.title)
+                        }
+
+                    }
+                },                label = { Text(text = item.title) },
                 selected = currentRoute == item.route,
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = MaterialTheme.colorScheme.onSurface,

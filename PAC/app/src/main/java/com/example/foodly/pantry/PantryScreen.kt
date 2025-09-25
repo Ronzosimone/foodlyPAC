@@ -96,7 +96,7 @@ fun PantryScreen(
                         ) {
                             Icon(Icons.Filled.Add, contentDescription = "Add Ingredient")
                             Spacer(Modifier.width(8.dp))
-                            Text("Aggiungi")
+                            Text("Add")
                         }
                     }
                     
@@ -114,7 +114,7 @@ fun PantryScreen(
                         )
                     ) {
                         Text(
-                            "Consigliami una ricetta",
+                            "Recommend a Recipe",
                             style = MaterialTheme.typography.titleMedium
                         )
                     }
@@ -147,13 +147,13 @@ fun PantryScreen(
                         verticalArrangement = Arrangement.Center
                     ) {
                         Text(
-                            "La tua dispensa è vuota",
+                            "Your pantry is empty",
                             style = MaterialTheme.typography.headlineSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            "Aggiungi alcuni ingredienti per iniziare",
+                            "Add some ingredients to get started",
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -285,7 +285,7 @@ fun AddEditPantryItemDialog(
     val context = LocalContext.current
 
     val unitOptions = listOf(
-        UnitType.UNITS to "Unità",
+        UnitType.UNITS to "Units",
         UnitType.GRAMS to "Grammi"
     )
 
@@ -293,7 +293,7 @@ fun AddEditPantryItemDialog(
         onDismissRequest = { if (!isLoading) onDismiss() },
         title = { 
             Text(
-                if (editingItem == null) "Aggiungi Ingrediente" else "Modifica Ingrediente",
+                if (editingItem == null) "Add Ingredient" else "Edit Ingredient",
                 style = MaterialTheme.typography.headlineSmall
             ) 
         },
@@ -343,7 +343,7 @@ fun AddEditPantryItemDialog(
                     value = quantityStr,
                     onValueChange = { quantityStr = it.filter { char -> char.isDigit() || char == '.' } },
                     enabled = !isLoading,
-                    label = { Text("Quantità") },
+                    label = { Text("Quantity") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
@@ -361,11 +361,11 @@ fun AddEditPantryItemDialog(
                         onValueChange = {},
                         readOnly = true,
                         enabled = !isLoading,
-                        label = { Text("Tipo di Unità") },
+                        label = { Text("Unit Type") },
                         trailingIcon = {
                             Icon(
                                 Icons.Filled.ArrowDropDown,
-                                "Seleziona unità",
+                                "Select unit",
                                 Modifier.clickable { if (!isLoading) expandedUnitDropdown = true }
                             )
                         },
@@ -428,13 +428,13 @@ fun AddEditPantryItemDialog(
                 onClick = {
                     val quantity = quantityStr.toDoubleOrNull()
                     if (quantity == null || quantity <= 0) {
-                        Toast.makeText(context, "Inserisci una quantità valida.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Enter a valid quantity.", Toast.LENGTH_SHORT).show()
                         return@Button
                     }
 
                     val unitString = when (selectedUnitType) {
                         UnitType.GRAMS -> "g"
-                        UnitType.UNITS -> "unità"
+                        UnitType.UNITS -> "units"
                     }
 
                     onConfirm(selectedIngredient, quantity, unitString)
@@ -448,7 +448,7 @@ fun AddEditPantryItemDialog(
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                 } else {
-                    Text("Conferma")
+                    Text("Confirm")
                 }
             }
         },
@@ -458,7 +458,7 @@ fun AddEditPantryItemDialog(
                 enabled = !isLoading,
                 shape = MaterialTheme.shapes.medium
             ) {
-                Text("Annulla")
+                Text("Cancel")
             }
         },
         shape = MaterialTheme.shapes.extraLarge

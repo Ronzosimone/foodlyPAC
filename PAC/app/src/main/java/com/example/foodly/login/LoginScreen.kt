@@ -55,14 +55,14 @@ fun LoginScreen(
         ) {
             Image(
                 painter = painterResource(R.drawable.logo),
-                contentDescription = "Logo Foodly",
+                contentDescription = "Foodly Logo",
                 modifier = Modifier.fillMaxSize() // Image fills the card
             )
         }
 
         Spacer(Modifier.height(32.dp)) // Increased spacing
         Text(
-            text = "Benvenuto in Foodly!",
+            text = "Welcome to Foodly!",
             style = MaterialTheme.typography.headlineSmall, // Adjusted style for prominence
             color = MaterialTheme.colorScheme.primary // Keep primary color for title
         )
@@ -108,7 +108,7 @@ fun LoginScreen(
                     color = MaterialTheme.colorScheme.onPrimary // Correct for Button text color
                 )
             } else {
-                Text("Accedi") // Text color will be onPrimary
+                Text("Sign In") // Text color will be onPrimary
             }
         }
 
@@ -125,12 +125,9 @@ fun LoginScreen(
         }
 
         // TextButtons - Colors are fine
-        TextButton(onClick = { /* TODO: Forgot password */ }) {
-            Text("Password dimenticata?", color = MaterialTheme.colorScheme.secondary)
-        }
         Spacer(Modifier.height(8.dp))
         TextButton(onClick = onNavigateToRegister) {
-            Text("Non hai un account? Registrati", color = MaterialTheme.colorScheme.primary)
+            Text("Don't have an account? Sign Up", color = MaterialTheme.colorScheme.primary)
         }
     }
 
