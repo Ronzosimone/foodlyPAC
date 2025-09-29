@@ -265,7 +265,7 @@ fun RecipeRecommendationCard(
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
-                            text = "Tocca il titolo per i dettagli",
+                            text = "View details",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier
