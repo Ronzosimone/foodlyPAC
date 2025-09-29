@@ -4,6 +4,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
+    id("org.jetbrains.kotlinx.kover") version "0.9.2"
+
 }
 
 android {
@@ -97,4 +99,42 @@ dependencies {
 
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+}
+
+// Configurazione Kover per reportistiche di copertura del codice
+kover {
+    reports {
+        // Report totali per tutto il progetto
+        total {
+            xml {
+                onCheck = true // Genera report XML quando si eseguono i test
+            }
+            html {
+                onCheck = true // Genera report HTML quando si eseguono i test
+            }
+            verify {
+                onCheck = true // Verifica la copertura quando si eseguono i test
+                rule {
+                    // Regola minima di copertura del codice
+                    minBound(80) // Almeno 80% di copertura
+                }
+            }
+            
+            // Filtra le classi da includere/escludere nei report
+            filters {
+                excludes {
+                    // Escludi file generati automaticamente
+                    classes("*.BuildConfig*")
+                    classes("*.R")
+                    classes("*.R$*")
+                    classes("*.databinding.*")
+                    classes("*.generated.*")
+                    // Escludi Compose preview e funzioni di preview
+                    classes("*ComposableSingletons*")
+                    classes("*Preview*")
+                    classes("*Kt")
+                }
+            }
+        }
+    }
 }

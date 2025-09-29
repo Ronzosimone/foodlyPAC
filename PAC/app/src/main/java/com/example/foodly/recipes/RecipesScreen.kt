@@ -144,11 +144,6 @@ fun RecipeItem(
                     color = MaterialTheme.colorScheme.onSurface, // Use onSurface
                     modifier = Modifier.padding(bottom = 4.dp)
                 )
-                Text(
-                    text = "Missed Ingredients: ${recipe.missedIngredientCount}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurface // Use onSurface
-                )
             }
         }
     }
