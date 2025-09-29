@@ -57,7 +57,7 @@ fun PantryScreen(
             CenterAlignedTopAppBar(
                 title = { 
                     Text(
-                        "Dispensa",
+                        "Pantry",
                         style = MaterialTheme.typography.headlineSmall,
                         color = MaterialTheme.colorScheme.onSurface
                     ) 
