@@ -47,7 +47,11 @@ fun RecipeRecommendationsScreen(
     LaunchedEffect(addRecipeMessage) {
         addRecipeMessage?.let {
             snackbarHostState.showSnackbar(it)
-            if (it.contains("aggiunta", ignoreCase = true) || it.contains("success", ignoreCase = true)) {
+            if (it.contains("aggiunta", ignoreCase = true) || it.contains(
+                    "success",
+                    ignoreCase = true
+                )
+            ) {
                 onBack()
             }
         }
@@ -115,26 +119,28 @@ fun RecipeRecommendationsScreen(
                                             containerColor = MaterialTheme.colorScheme.secondaryContainer
                                         )
                                     ) {
-                                        Column(
-                                            modifier = Modifier.padding(16.dp)
-                                        ) {
-                                            Text(
-                                                "Remaining ingredients:",
-                                                style = MaterialTheme.typography.titleSmall,
-                                                fontWeight = FontWeight.Bold
-                                            )
-                                            Spacer(modifier = Modifier.height(8.dp))
-                                            state.remainingIngredients.forEach { (ingredient, quantity) ->
-                                                if (quantity > 0) {
-                                                    Text(
-                                                        "• $ingredient: ${
-                                                            String.format(
-                                                                "%.2f",
-                                                                quantity
-                                                            )
-                                                        } g",
-                                                        style = MaterialTheme.typography.bodySmall
-                                                    )
+                                        if (state.remainingIngredients.any { it.value > 0 }) {
+                                            Column(
+                                                modifier = Modifier.padding(16.dp)
+                                            ) {
+                                                Text(
+                                                    "Remaining ingredients:",
+                                                    style = MaterialTheme.typography.titleSmall,
+                                                    fontWeight = FontWeight.Bold
+                                                )
+                                                Spacer(modifier = Modifier.height(8.dp))
+                                                state.remainingIngredients.forEach { (ingredient, quantity) ->
+                                                    if (quantity > 0) {
+                                                        Text(
+                                                            "• $ingredient: ${
+                                                                String.format(
+                                                                    "%.2f",
+                                                                    quantity
+                                                                )
+                                                            } g",
+                                                            style = MaterialTheme.typography.bodySmall
+                                                        )
+                                                    }
                                                 }
                                             }
                                         }
@@ -345,6 +351,7 @@ fun RecipeRecommendationImage(
                     )
                 }
             }
+
             is AsyncImagePainter.State.Error -> {
                 Box(
                     Modifier
@@ -361,6 +368,7 @@ fun RecipeRecommendationImage(
                     )
                 }
             }
+
             else -> Unit
         }
     }
