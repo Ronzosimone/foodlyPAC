@@ -286,7 +286,7 @@ fun AddEditPantryItemDialog(
 
     val unitOptions = listOf(
         UnitType.UNITS to "Units",
-        UnitType.GRAMS to "Grammi"
+        UnitType.GRAMS to "Grams"
     )
 
     AlertDialog(

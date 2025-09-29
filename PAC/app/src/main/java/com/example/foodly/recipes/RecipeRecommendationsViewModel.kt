@@ -57,7 +57,7 @@ class RecipeRecommendationsViewModel : ViewModel() {
             _addRecipeMessage.value = null
             when (val result = RecipesApiClient.addSelectedRecipe(context, recipeId)) {
                 is Result.Success -> {
-                    _addRecipeMessage.value = result.data ?: "Ricetta aggiunta con successo"
+                    _addRecipeMessage.value = result.data ?: "Added recipe successfully"
                 }
                 is Result.Error -> {
                     _addRecipeMessage.value = result.message

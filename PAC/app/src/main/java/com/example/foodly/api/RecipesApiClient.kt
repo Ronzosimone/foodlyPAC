@@ -19,7 +19,7 @@ object RecipesApiClient : BaseApiClient(NetworkSingleton.httpClient) {
         val result = postRequest<com.example.foodly.api.request.AddSelectedRecipeRequest, com.example.foodly.api.response.BasicResponse<String>>("AddSelectedRecipe", request)
         return when (result) {
             is Result.Success -> {
-                val message = result.data?.message ?: "Ricetta aggiunta con successo"
+                val message = result.data?.message ?: "Added recipe successfully"
                 Result.Success(message)
             }
             is Result.Error -> result
